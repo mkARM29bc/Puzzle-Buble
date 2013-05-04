@@ -34,7 +34,7 @@ void main()
 	cosAng = clamp(cosAng, 0, 1);
 	
 	color_vf = (diffuseColor * lightIntensity * cosAng) + (diffuseColor * ambientIntensity);
-	color_vf = diffuseColor * lightIntensity;
+	//color_vf = diffuseColor * lightIntensity;
 	gl_Position = pMatrix * vMatrix * mMatrix * vertex;
 }
 

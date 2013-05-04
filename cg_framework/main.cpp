@@ -4,25 +4,49 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <FreeImage.h>
-#include <iostream>
 
 #include "display.h"
 #include "main.h"
 
-using namespace std;
+
+
 
 #define SPACEBAR 32
 
+const int NUMBER_OBJECTS = 8;
+
+
+int colorBalls[NUMBER_OBJECTS][NUMBER_OBJECTS];
 bool inited = false; //Have we done initialization?
+int ballAtX=0;
+int ballAtY=0;
+int color=rand()%3+1;;
+int colorActive=color;
+/* Rui testing colors variable & more
+
+c changes camera (
+1,2,3 changes color
+
+*/
+
+//int colors[500];
+
+float positionbackground=0.05f;
+float pointerangle=90.0f;
+float dispx=-35.0f;
+/*end of test*/
 
 /*
 	vao: will hold the VAO identifier (usually one per object)
 	geomId: will hold the VBO identifier (one per attribute: position, normal, etc.)
 */
 
-const int NUMBER_OBJECTS = 8;
 
-OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/textured_cube.obj")};
+
+
+	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj")};
+
+
 GLuint vertexShaderId;
 GLuint fragShaderId;
 GLuint programId;
@@ -39,29 +63,35 @@ GLuint texUVId;
 glm::mat4 perspectiveMatrix;
 glm::mat4 cameraMatrix;
 
-glm::vec3 cameraPos(0.0f, 30.0f, 120.0f);
-glm::vec3 cameraView(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+glm::vec3 cameraPos[3]={glm::vec3(10.0f, 120.0f, -120.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, -10.0f)};
+glm::vec3 cameraView[3]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, 0.0f, 10.0f)};
+glm::vec3 cameraUp[3]={glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, -1.0f)};
 
 float angle = -1.57079633f;
+float angle2 = 0.0f;
+
+
 
 const float velocity = 0.25f;
 
 int cameraMode = 0;
-int moveout = 0;
+int move = 0;
 int frame=0,time,timebase=0;
-int speed = 100;
+int speed = 10;
 int restart = 1;
 int levels = 0;
 int players = 1;
 
-int lines = 8;
-int rows = 8;
 
-GLfloat lightDir[] = {1.0f, 1.0f, 1.0};
-GLfloat lightIntensity[] = {0.9f, 0.9f, 0.9f, 1.0f};
 
-GLfloat ambientComponent[] = {0.4f, 0.4f, 0.4f, 1.0f};
+//Rui - controls light movements
+bool increment=false;
+bool incrementy=true;
+
+GLfloat lightDir[] = {1.0f,  -0.5f, 1.0f};
+GLfloat lightIntensity[] = {0.9f, 0.9f, 0.9f, 0.0f};
+
+GLfloat ambientComponent[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuseColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 //GLfloat object_trans[] = {0.0f, -10.0f, 0.0f}; 
@@ -81,39 +111,39 @@ GLfloat COLORS[4][3] = {
 GLint LEVELS[2][8][8][2] = {
 	//LEVEL 0
 {{
-	{0,' '},{0,' '},{0,' '},{1,' '},{0,' '},{0,' '},{0,' '},{0,' '}
-},{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+},{
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }},
 	//LEVEL 1
 {{
 	{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'},{1,'g'} 
 },{
-	{-1,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
+	{0,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
 },{
 	{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'},{1,'y'}
 },{
-	{-1,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
+	{0,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }}
 };
 
@@ -147,7 +177,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
-//GLfloat TOP_BORDER = POSITION[0][0][0][1];
+GLfloat TOP_BORDER = POSITION[0][0][0][1];
 //GLfloat BALL_BORDER[1] = {};
 
 /* 
@@ -349,6 +379,8 @@ GLuint loadTexture(char* textureFile)
 	GLuint tId;
 
 	FIBITMAP *tf = FreeImage_Load(FIF_DDS, textureFile);
+	//FIBITMAP *tf = FreeImage_Load(FIF_PNG, textureFile, PNG_DEFAULT);
+	
 	if (tf) {
 
 		fprintf(stderr, "Texture: %s loaded\n", textureFile);
@@ -380,6 +412,7 @@ GLuint loadTexture(char* textureFile)
 void init(void) 
 {
 	
+
 	/*
 	GLEW initialization.
 	activate GLEW experimental features to have access to the most recent OpenGL, and then call glewInit.
@@ -412,11 +445,34 @@ void init(void)
 	//initGeometry();
 	//object.print();
 
-	baseTextureId = loadTexture("../models/textures/base.dds");
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
+	baseTextureId = loadTexture("../models/textures/sky.dds");
+	
+	//Rui edit
+	glClearColor(0.8f, 0.8f, 1.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
+	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
+	
 	glEnable(GL_DEPTH_TEST);
+
+	// Rui
+
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	glEnable(GL_SAMPLE_SHADING);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
+	glMateriali(GL_FRONT, GL_SHININESS, 56);
+
+	for (int i=0;i<NUMBER_OBJECTS;i++){
+		for (int j=0;j<NUMBER_OBJECTS;j++)
+			colorBalls[i][j]=0;
+	//END Rui
 	checkError("init");
+}
 }
 
 
@@ -430,26 +486,100 @@ void init(void)
 */
 
 //float t = 0;
+void setBallColor(void){
+		if (color==1){
+	
+	diffuseColor[0] = 1.0f;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
+	}
+	if (color==2){
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 1.0f;
+	diffuseColor[2] = 0.0f;
 
-void display(void)
-{
+	}
+	if (color==3){
+	
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 1.0f;
+	}
+	}
+void display(void){
 	if (!inited) {
 		init();
 		inited = true;
 	}
 
-	//BALL_MOVEMENT
-	if (moveout == 1){
-		time=glutGet(GLUT_ELAPSED_TIME);
+	if (cameraPos[0][0]!=0.0f ||cameraPos[0][1]!= 30.0f|| cameraPos[0][2]!= 120.0f)
+	{
+		if (cameraPos[0][0] > 0.0f) cameraPos[0][0]-=0.1f;
+		if (cameraPos[0][1] > 30.0f) cameraPos[0][1]-=0.1f;
+		if (cameraPos[0][2] < 120.0f) cameraPos[0][2]+=0.1f;
 
+	}
+
+
+	if (move==0 && (PLAYER[0][0] == PLAYER_ORIGINAL[0][0]) && (PLAYER[0][1] == PLAYER_ORIGINAL[0][1]) && (angle!=-1.57079633f || angle2!=0.0f) ){
+				
+				if (angle> -1.57079633f)
+				{angle-=0.0001;}
+				if (angle< -1.57079633f)
+				{angle+=0.0001;}
+
+				if (angle2> 0.0f)
+				{angle2-=0.0001;}
+				if (angle2< 0.0f)
+				{angle2+=0.0001;}
+
+				
+	}
+	//BALL_MOVEMENT
+	//3rd person
+		cameraView[1][0]=PLAYER[0][0]+MOVE_PLAYER_TRANSLATE[0][0];
+		cameraView[1][1]=PLAYER[0][1]+MOVE_PLAYER_TRANSLATE[0][1];
+		cameraPos[1][0]=cameraView[1][0];
+		cameraPos[1][1]=cameraView[1][1]-70.0f;
+		cameraView[1][1]=cameraView[1][1]+100.0f;
+	//1st person
+		cameraView[2][0]=PLAYER[0][0]+MOVE_PLAYER_TRANSLATE[0][0];
+		cameraView[2][1]=PLAYER[0][1]+MOVE_PLAYER_TRANSLATE[0][1];
+		cameraPos[2][0]=cameraView[2][0];
+		
+		cameraPos[2][1]=cameraView[2][1]-10.0f;
+		cameraView[2][1]=cameraView[2][1]+100.0f;
+		
+		//cameraPos[1][2]=PLAYER[0][2];
+		
+	if (move == 1){
+		
+		// Rui camera
+		angle += MOVE_PLAYER_TRANSLATE[0][0]/10000;		//x
+		angle2+=MOVE_PLAYER_TRANSLATE[0][1] /100000;	//y
+
+		
+		//end camera
+
+		time=glutGet(GLUT_ELAPSED_TIME);
+		
 		if (time - timebase >speed) {
 			PLAYER[0][3]-=10.0;
 			PLAYER[0][1] += MOVE_PLAYER_TRANSLATE[0][1];
 			PLAYER[0][0] += MOVE_PLAYER_TRANSLATE[0][0];
 			PLAYER[0][4] = MOVE_PLAYER_TRANSLATE[0][1];
 			
+			
+		
+			
+			
+			
 			if(MOVE_PLAYER_TRANSLATE[0][0] == 0.0f){
 				PLAYER[0][5] = 0.0f;
+
+
+
+
 			}
 			
 			else{
@@ -470,77 +600,15 @@ void display(void)
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
 			}
 
-			
-			int i=0,j=0, foundX=0,foundY=0;
-		
-			while (true){
-
-				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
-					break;
-				}
-				
-				if (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //8
-					foundY = 1;
-				}
-				else{
-					j = j+1;
-				}
-				
-				if (PLAYER[0][1] <= (70.0-i*7.0)+3.5   && PLAYER[0][1] >= (70.0-i*7.0)-3.5){ //7
-					foundX = 1;
-				}
-				else{
-					i = i+1;
-				}
-
-			}
-			
-			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
-				
-				GAMEPLAY[0][i][j][0] = 1;
-
-				if(j-1>=0)
-					if(GAMEPLAY[0][i][j-1][0] == 0)
-						GAMEPLAY[0][i][j-1][0] = 2;
-
-				if(j+1<8)
-					if(GAMEPLAY[0][i][j+1][0] == 0)
-						GAMEPLAY[0][i][j+1][0] = 2;
-							
-				if(i+1<lines){
-					if(GAMEPLAY[0][i+1][j][0] == 0)
-						GAMEPLAY[0][i+1][j][0] = 2;
-
-					if(j+1<8)
-						if(GAMEPLAY[0][i+1][j+1][0] == 0)
-							GAMEPLAY[0][i+1][j+1][0] = 2;
-				}
-				
-				for(int j=0;j<7;j++){
-					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
-				}
-				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
-				for(int j=0;j<2;j++){
-					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
-				}
-				moveout = 0;
-
-				for (int j=0;j<8;j++){
-					for (int k=0;k<8;k++){
-						if(GAMEPLAY[0][j][k][0] != -1)
-							printf("%d ",GAMEPLAY[0][j][k][0]);
-					}
-				printf("\n");
-				}
-
-			}
-
-			/*
 			if(PLAYER[0][1] > TOP_BORDER){
+
 				float interval = abs(POSITION[0][0][0][0] - PLAYER[0][0]);
 				int j = 0;
 				move = 0;
 
+				//Rui edit
+				
+				// edit
 				for (int i=1;i<8;i++){
 					if(((abs(POSITION[0][0][i][0] - PLAYER[0][0])) <= interval) && (GAMEPLAY[0][0][i][0] == 0)){
 						j = i;
@@ -548,6 +616,11 @@ void display(void)
 					}
 				}
 				GAMEPLAY[0][0][j][0] = 1;
+
+				//RUI
+				colorBalls[0][j]=colorActive;
+				colorActive=rand()%3+1;
+				//
 				for(int j=0;j<7;j++){
 					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
 				}
@@ -556,7 +629,7 @@ void display(void)
 					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
 				}
 			}
-			*/
+
 		}
 	}
 	
@@ -567,6 +640,42 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clears the display with the defined clear color
 	glUseProgram(programId);
 
+	//TEST Rui
+	setBallColor();
+	
+	if (increment){
+		lightDir[0]=lightDir[0]+0.001f;
+		}
+
+	if (lightDir[0]>=1.0)
+	{increment=false;}
+	
+	if (!increment)
+	{		
+		lightDir[0]=lightDir[0]-0.001f;
+		
+	}
+	if (lightDir[0]<=-1.0)
+	{increment=true;}
+
+
+		if (incrementy){
+		lightDir[1]=lightDir[1]+0.001f;
+		}
+
+	if (lightDir[1]>=1.0)
+	{incrementy=false;}
+	
+	if (!incrementy)
+	{		
+		lightDir[1]=lightDir[1]-0.001f;
+		
+	}
+	if (lightDir[1]<=-1.0)
+	{incrementy=true;}
+
+
+
 
 	// RESTART_THE_GAME_SET
 	if (restart == 1){
@@ -574,42 +683,8 @@ void display(void)
 			for (int j=0;j<8;j++){
 				for (int k=0;k<8;k++){
 					for(int l=0;l<2;l++){
-
-						if((GAMEPLAY[0][j][k][0]== 2 &&  LEVELS[levels][j][k][0] == 0) == 0)
-							GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
-
+						GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
 					}
-					
-					if(j==0 && GAMEPLAY[0][j][k][0] == 0){
-							GAMEPLAY[0][j][k][0] = 2;
-					}
-
-					if(GAMEPLAY[0][j][k][0] == 1){
-						
-						if(k-1>=0)
-							if(GAMEPLAY[0][j][k-1][0] == 0)
-								GAMEPLAY[0][j][k-1][0] = 2;
-								
-
-						if(k+1<8)
-							if(GAMEPLAY[0][j][k+1][0] == 0){
-								GAMEPLAY[0][j][k+1][0] = 2;
-							}
-						if(j+1<lines){
-							if(GAMEPLAY[0][j+1][k][0] == 0){
-								GAMEPLAY[0][j+1][k][0] = 2;
-							}
-							if(k-1>=0){
-								if(GAMEPLAY[0][j+1][k-1][0] == 0){
-									GAMEPLAY[0][j+1][k-1][0] = 2;
-
-								}
-							}
-						}
-					}
-
-					
-
 				}
 			}
 			
@@ -623,34 +698,47 @@ void display(void)
 			
 		}
 
-		moveout = 0;
+		move = 0;
 		restart = 0;
-
-		for (int j=0;j<8;j++){
-			for (int k=0;k<8;k++){
-				if(GAMEPLAY[0][j][k][0] != -1)
-					printf("%d ",GAMEPLAY[0][j][k][0]);
-			}
-			printf("\n");
-		}
 	}
 
-
-
-
+	//if (cameraMode!=1)
+	
+	//RUI
+	color=colorActive;
+	setBallColor();
+	//END RUI
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	
 	for(int i=0;i<players;i++){
 		for(int j=0;j<8;j++){
 			for(int k=0;k<8;k++){
 				if((j%2 == 1 && k ==0) == 0 && GAMEPLAY[i][j][k][0] == 1){
+					//RUI
+					color=colorBalls[0][k];
+					setBallColor();
+					//
 					display_at(0,POSITION[0][j%2][k][0], POSITION[0][j%2][k][1] -14.0*(j/2), 0.0f, 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 				}
 			}
 		}
 	}
 
-	display_at(1, -15.0f, -15.0f, 0.0f,45.0f,0.0f, 1.0f, 0.0f,20.0f,3.0f,1.0f);
+	display_at(1, 0.0f, -15.0f, 0.0f,pointerangle,0.0f, -1.0f, 1.0f,20.0f,3.0f,1.0f);
+	
+	//RUI barra cima
+	display_at(1, -35.0f, 75.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,70.0f,2.0f,2.0f);
+
+		//RUI barra esq
+	display_at(1, -35.0f, -10.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,85.0f,2.0f);
+	//RUI barra dir
+	display_at(1, 33.0f, -10.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,87.0f,2.0f);
+
+	
+	//dispx+=0.00035f;
+	//RUI - GLOBE
+	display_at(2, dispx, -dispx, -100.0f, 1.0f,1.0f, 1.0f, 1.0f,100.0f,100.0f,100.0f);
+	//END 
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -697,23 +785,24 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 'c':
 			cameraMode +=1;
-			if(cameraMode == 2) {
+			if(cameraMode == 3) {
 				cameraMode = 0;
 			}
 			break;
 		case 'a':
-			cameraPos.x += sin(angle) * velocity;
-			cameraPos.z -= cos(angle) * velocity;
+			cameraPos[cameraMode].x += sin(angle) * velocity;
+			cameraPos[cameraMode].z -= cos(angle) * velocity;
 			break;
 		case 'd':
-			cameraPos.x -= sin(angle) * velocity;
-			cameraPos.z += cos(angle) * velocity;
+			cameraPos[cameraMode].x -= sin(angle) * velocity;
+			cameraPos[cameraMode].z += cos(angle) * velocity;
 			break;
 		case 'w':
-			cameraPos.y += velocity;
+			cameraPos[cameraMode].y += velocity;
 			break;
 		case 's':
-			cameraPos.y -= velocity;
+			cameraPos[cameraMode].y -= velocity;
+			 
 			break;
 
 		case 'x':
@@ -723,12 +812,12 @@ void keyboard(unsigned char key, int x, int y)
 			angle += velocity;
 			break;
 		case 'q':
-			cameraPos.x += cos(angle) * velocity;
-			cameraPos.z += sin(angle) * velocity;
+			cameraPos[cameraMode].x += cos(angle) * velocity;
+			cameraPos[cameraMode].z += sin(angle) * velocity;
 			break;
 		case 'z':
-			cameraPos.x -= cos(angle) * velocity;
-			cameraPos.z -= sin(angle) * velocity;
+			cameraPos[cameraMode].x -= cos(angle) * velocity;
+			cameraPos[cameraMode].z -= sin(angle) * velocity;
 			break;
 			/*
 		case 'u':
@@ -746,8 +835,8 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 		case SPACEBAR:
-			if (moveout == 0){
-				moveout = 1;
+			if (move == 0){
+				move = 1;
 				MOVE_PLAYER_TRANSLATE[0][0] = MOVE_PLAYER[0][0];
 				MOVE_PLAYER_TRANSLATE[0][1] = MOVE_PLAYER[0][1];
 				PLAYER[0][0] += MOVE_PLAYER_TRANSLATE[0][0];
@@ -756,10 +845,22 @@ void keyboard(unsigned char key, int x, int y)
 				timebase=glutGet(GLUT_ELAPSED_TIME);
 			}
 			else{
-				moveout = 0;
+				move = 0;
 			}
 			
 			break;
+
+			/*Rui test colors*/
+			case '1':
+			color=1;
+			break;
+			case '2':
+			color=2;
+			break;
+			case '3':
+			color=3;
+			break;
+			/*END Rui test colors*/
    }
 }
 
@@ -783,6 +884,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			if (MOVE_PLAYER[0][0] >= -0.9f){
 				MOVE_PLAYER[0][0] -= 0.1;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
+				pointerangle +=6.5f;
 			}
 			break;
 
@@ -792,6 +894,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			if (MOVE_PLAYER[0][0] <= 0.9f){
 				MOVE_PLAYER[0][0] += 0.1;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
+				pointerangle -=6.5f;
 			}
 			break;
 		case GLUT_KEY_UP:
@@ -804,6 +907,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			PLAYER[0][5] = 0.0f;
 			PLAYER[0][1]+=1;
 			*/
+
 			if (MOVE_PLAYER_TRANSLATE[0][0] >= -0.9f){
 				MOVE_PLAYER_TRANSLATE[0][0] -= 0.1;
 				MOVE_PLAYER_TRANSLATE[0][1] = 1 - abs(MOVE_PLAYER_TRANSLATE[0][0]);
@@ -831,15 +935,20 @@ void setupCamera(void)
 {
 
 	//Define the view direction based on the camera's position
-	cameraView.x = cameraPos.x + cos(angle);
-	cameraView.y = cameraPos.y;
-	cameraView.z = cameraPos.z + sin(angle);
+	cameraView[0].x = cameraPos[0].x + cos(angle);
 
+	// Rui edit
+	cameraView[0].y = cameraPos[0].y + sin(angle2);
+	//
+
+	cameraView[0].z = cameraPos[0].z + sin(angle);
+
+		
 
 	//Creates the view matrix based on the position, the view direction and the up vector
-	cameraMatrix = glm::lookAt(cameraPos,
-								cameraView,
-								cameraUp);
+	cameraMatrix = glm::lookAt(cameraPos[cameraMode],
+								cameraView[cameraMode],
+								cameraUp[cameraMode]);
 }
 
 /* 
@@ -883,4 +992,5 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
 
