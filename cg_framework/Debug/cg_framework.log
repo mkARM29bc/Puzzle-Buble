@@ -1,27 +1,27 @@
-﻿Build started 04/05/2013 00:55:13.
-     1>Project "C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
+﻿Build started 04-05-2013 17:12:23.
+     1>Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"..\external libs\glew\include" /I"..\external libs\FreeImage\Dist" /I"..\external libs\freeglut\include" /I"..\external libs\glm" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(288): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(289): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(527): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(529): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(532): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(534): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(721): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(885): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(895): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(912): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\desktop\dropbox\skydrive\cg\puzzle-buble\1rui\cg_framework\main.cpp(927): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(528): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(530): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(533): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(535): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(826): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(990): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(1000): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(1017): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\cg_framework_buble\cg_framework\main.cpp(1032): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\Debug\cg_framework.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\Debug\cg_framework.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\Debug\cg_framework.lib" /MACHINE:X86 Debug\colision.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\Debug\cg_framework.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\Debug\cg_framework.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\Debug\cg_framework.lib" /MACHINE:X86 Debug\colision.obj
          Debug\display.obj
          Debug\main.obj
          Debug\objloader.obj
-         cg_framework.vcxproj -> C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\Debug\cg_framework.exe
-     1>Done Building Project "C:\Users\Rui Orey\Desktop\Dropbox\SkyDrive\CG\Puzzle-Buble\1Rui\cg_framework\cg_framework.vcxproj" (Build target(s)).
+         cg_framework.vcxproj -> C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\Debug\cg_framework.exe
+     1>Done Building Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\cg_framework_buble\cg_framework\cg_framework.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.91
+Time Elapsed 00:00:02.97

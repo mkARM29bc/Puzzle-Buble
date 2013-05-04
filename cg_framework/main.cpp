@@ -14,7 +14,8 @@
 #define SPACEBAR 32
 
 const int NUMBER_OBJECTS = 8;
-
+int lines = 8;
+int rows = 8;
 
 int colorBalls[NUMBER_OBJECTS][NUMBER_OBJECTS];
 bool inited = false; //Have we done initialization?
@@ -113,37 +114,37 @@ GLint LEVELS[2][8][8][2] = {
 {{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }},
 	//LEVEL 1
 {{
 	{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'},{1,'g'} 
 },{
-	{0,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
+	{-1,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
 },{
 	{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'},{1,'y'}
 },{
-	{0,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
+	{-1,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }}
 };
 
@@ -570,14 +571,8 @@ void display(void){
 			PLAYER[0][4] = MOVE_PLAYER_TRANSLATE[0][1];
 			
 			
-		
-			
-			
-			
 			if(MOVE_PLAYER_TRANSLATE[0][0] == 0.0f){
 				PLAYER[0][5] = 0.0f;
-
-
 
 
 			}
@@ -600,6 +595,74 @@ void display(void){
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
 			}
 
+			int i=0,j=0, foundX=0,foundY=0;
+
+			while (true){
+
+				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
+					break;
+				}
+				
+				if (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //8
+					foundY = 1;
+				}
+				else{
+					j = j+1;
+				}
+				
+				if (PLAYER[0][1] <= (70.0-i*7.0)+3.5   && PLAYER[0][1] >= (70.0-i*7.0)-3.5){ //7
+					foundX = 1;
+				}
+				else{
+					i = i+1;
+				}
+
+			}
+			
+			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
+				
+				GAMEPLAY[0][i][j][0] = 1;
+
+				colorBalls[i][j]=colorActive;
+				colorActive=rand()%3+1;
+
+				if(j-1>=0)
+					if(GAMEPLAY[0][i][j-1][0] == 0)
+						GAMEPLAY[0][i][j-1][0] = 2;
+
+				if(j+1<8)
+					if(GAMEPLAY[0][i][j+1][0] == 0)
+						GAMEPLAY[0][i][j+1][0] = 2;
+							
+				if(i+1<lines){
+					if(GAMEPLAY[0][i+1][j][0] == 0)
+						GAMEPLAY[0][i+1][j][0] = 2;
+
+					if(j+1<8)
+						if(GAMEPLAY[0][i+1][j+1][0] == 0)
+							GAMEPLAY[0][i+1][j+1][0] = 2;
+				}
+				
+				for(int j=0;j<7;j++){
+					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
+				}
+				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
+				for(int j=0;j<2;j++){
+					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
+				}
+				move = 0;
+
+				for (int j=0;j<8;j++){
+					for (int k=0;k<8;k++){
+						if(GAMEPLAY[0][j][k][0] != -1)
+							printf("%d ",GAMEPLAY[0][j][k][0]);
+					}
+				printf("\n");
+				}
+
+			}
+
+			/*
 			if(PLAYER[0][1] > TOP_BORDER){
 
 				float interval = abs(POSITION[0][0][0][0] - PLAYER[0][0]);
@@ -629,7 +692,7 @@ void display(void){
 					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
 				}
 			}
-
+			*/
 		}
 	}
 	
@@ -683,8 +746,42 @@ void display(void){
 			for (int j=0;j<8;j++){
 				for (int k=0;k<8;k++){
 					for(int l=0;l<2;l++){
-						GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
+
+						if((GAMEPLAY[0][j][k][0]== 2 &&  LEVELS[levels][j][k][0] == 0) == 0)
+							GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
+
 					}
+					
+					if(j==0 && GAMEPLAY[0][j][k][0] == 0){
+							GAMEPLAY[0][j][k][0] = 2;
+					}
+
+					if(GAMEPLAY[0][j][k][0] == 1){
+						
+						if(k-1>=0)
+							if(GAMEPLAY[0][j][k-1][0] == 0)
+								GAMEPLAY[0][j][k-1][0] = 2;
+								
+
+						if(k+1<8)
+							if(GAMEPLAY[0][j][k+1][0] == 0){
+								GAMEPLAY[0][j][k+1][0] = 2;
+							}
+						if(j+1<lines){
+							if(GAMEPLAY[0][j+1][k][0] == 0){
+								GAMEPLAY[0][j+1][k][0] = 2;
+							}
+							if(k-1>=0){
+								if(GAMEPLAY[0][j+1][k-1][0] == 0){
+									GAMEPLAY[0][j+1][k-1][0] = 2;
+
+								}
+							}
+						}
+					}
+
+					
+
 				}
 			}
 			
@@ -700,6 +797,14 @@ void display(void){
 
 		move = 0;
 		restart = 0;
+
+		for (int j=0;j<8;j++){
+			for (int k=0;k<8;k++){
+				if(GAMEPLAY[0][j][k][0] != -1)
+					printf("%d ",GAMEPLAY[0][j][k][0]);
+			}
+			printf("\n");
+		}
 	}
 
 	//if (cameraMode!=1)
@@ -715,7 +820,7 @@ void display(void){
 			for(int k=0;k<8;k++){
 				if((j%2 == 1 && k ==0) == 0 && GAMEPLAY[i][j][k][0] == 1){
 					//RUI
-					color=colorBalls[0][k];
+					color=colorBalls[j][k];
 					setBallColor();
 					//
 					display_at(0,POSITION[0][j%2][k][0], POSITION[0][j%2][k][1] -14.0*(j/2), 0.0f, 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
