@@ -4,9 +4,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <FreeImage.h>
+#include <iostream>
 
 #include "display.h"
 #include "main.h"
+
+using namespace std;
 
 #define SPACEBAR 32
 
@@ -45,12 +48,15 @@ float angle = -1.57079633f;
 const float velocity = 0.25f;
 
 int cameraMode = 0;
-int move = 0;
+int moveout = 0;
 int frame=0,time,timebase=0;
-int speed = 10;
+int speed = 100;
 int restart = 1;
 int levels = 0;
 int players = 1;
+
+int lines = 8;
+int rows = 8;
 
 GLfloat lightDir[] = {1.0f, 1.0f, 1.0};
 GLfloat lightIntensity[] = {0.9f, 0.9f, 0.9f, 1.0f};
@@ -75,39 +81,39 @@ GLfloat COLORS[4][3] = {
 GLint LEVELS[2][8][8][2] = {
 	//LEVEL 0
 {{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{0,' '},{0,' '},{0,' '},{1,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+},{
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
-},{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }},
 	//LEVEL 1
 {{
 	{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'},{1,'g'} 
 },{
-	{0,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
+	{-1,' '},{1,'r'},{1,'r'},{1,'y'},{1,'y'},{1,'b'},{1,'b'},{1,'g'}
 },{
 	{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'},{1,'y'}
 },{
-	{0,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
+	{-1,' '},{1,'b'},{1,'b'},{1,'g'},{1,'g'},{1,'r'},{1,'r'},{1,'y'}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
 	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 },{
-	{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
+	{-1,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '},{0,' '}
 }}
 };
 
@@ -141,7 +147,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
-GLfloat TOP_BORDER = POSITION[0][0][0][1];
+//GLfloat TOP_BORDER = POSITION[0][0][0][1];
 //GLfloat BALL_BORDER[1] = {};
 
 /* 
@@ -433,7 +439,7 @@ void display(void)
 	}
 
 	//BALL_MOVEMENT
-	if (move == 1){
+	if (moveout == 1){
 		time=glutGet(GLUT_ELAPSED_TIME);
 
 		if (time - timebase >speed) {
@@ -464,6 +470,72 @@ void display(void)
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
 			}
 
+			
+			int i=0,j=0, foundX=0,foundY=0;
+		
+			while (true){
+
+				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
+					break;
+				}
+				
+				if (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //8
+					foundY = 1;
+				}
+				else{
+					j = j+1;
+				}
+				
+				if (PLAYER[0][1] <= (70.0-i*7.0)+3.5   && PLAYER[0][1] >= (70.0-i*7.0)-3.5){ //7
+					foundX = 1;
+				}
+				else{
+					i = i+1;
+				}
+
+			}
+			
+			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
+				
+				GAMEPLAY[0][i][j][0] = 1;
+
+				if(j-1>=0)
+					if(GAMEPLAY[0][i][j-1][0] == 0)
+						GAMEPLAY[0][i][j-1][0] = 2;
+
+				if(j+1<8)
+					if(GAMEPLAY[0][i][j+1][0] == 0)
+						GAMEPLAY[0][i][j+1][0] = 2;
+							
+				if(i+1<lines){
+					if(GAMEPLAY[0][i+1][j][0] == 0)
+						GAMEPLAY[0][i+1][j][0] = 2;
+
+					if(j+1<8)
+						if(GAMEPLAY[0][i+1][j+1][0] == 0)
+							GAMEPLAY[0][i+1][j+1][0] = 2;
+				}
+				
+				for(int j=0;j<7;j++){
+					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
+				}
+				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
+				for(int j=0;j<2;j++){
+					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
+				}
+				moveout = 0;
+
+				for (int j=0;j<8;j++){
+					for (int k=0;k<8;k++){
+						if(GAMEPLAY[0][j][k][0] != -1)
+							printf("%d ",GAMEPLAY[0][j][k][0]);
+					}
+				printf("\n");
+				}
+
+			}
+
+			/*
 			if(PLAYER[0][1] > TOP_BORDER){
 				float interval = abs(POSITION[0][0][0][0] - PLAYER[0][0]);
 				int j = 0;
@@ -484,7 +556,7 @@ void display(void)
 					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
 				}
 			}
-
+			*/
 		}
 	}
 	
@@ -502,8 +574,42 @@ void display(void)
 			for (int j=0;j<8;j++){
 				for (int k=0;k<8;k++){
 					for(int l=0;l<2;l++){
-						GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
+
+						if((GAMEPLAY[0][j][k][0]== 2 &&  LEVELS[levels][j][k][0] == 0) == 0)
+							GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
+
 					}
+					
+					if(j==0 && GAMEPLAY[0][j][k][0] == 0){
+							GAMEPLAY[0][j][k][0] = 2;
+					}
+
+					if(GAMEPLAY[0][j][k][0] == 1){
+						
+						if(k-1>=0)
+							if(GAMEPLAY[0][j][k-1][0] == 0)
+								GAMEPLAY[0][j][k-1][0] = 2;
+								
+
+						if(k+1<8)
+							if(GAMEPLAY[0][j][k+1][0] == 0){
+								GAMEPLAY[0][j][k+1][0] = 2;
+							}
+						if(j+1<lines){
+							if(GAMEPLAY[0][j+1][k][0] == 0){
+								GAMEPLAY[0][j+1][k][0] = 2;
+							}
+							if(k-1>=0){
+								if(GAMEPLAY[0][j+1][k-1][0] == 0){
+									GAMEPLAY[0][j+1][k-1][0] = 2;
+
+								}
+							}
+						}
+					}
+
+					
+
 				}
 			}
 			
@@ -517,9 +623,20 @@ void display(void)
 			
 		}
 
-		move = 0;
+		moveout = 0;
 		restart = 0;
+
+		for (int j=0;j<8;j++){
+			for (int k=0;k<8;k++){
+				if(GAMEPLAY[0][j][k][0] != -1)
+					printf("%d ",GAMEPLAY[0][j][k][0]);
+			}
+			printf("\n");
+		}
 	}
+
+
+
 
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	
@@ -629,8 +746,8 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 		case SPACEBAR:
-			if (move == 0){
-				move = 1;
+			if (moveout == 0){
+				moveout = 1;
 				MOVE_PLAYER_TRANSLATE[0][0] = MOVE_PLAYER[0][0];
 				MOVE_PLAYER_TRANSLATE[0][1] = MOVE_PLAYER[0][1];
 				PLAYER[0][0] += MOVE_PLAYER_TRANSLATE[0][0];
@@ -639,7 +756,7 @@ void keyboard(unsigned char key, int x, int y)
 				timebase=glutGet(GLUT_ELAPSED_TIME);
 			}
 			else{
-				move = 0;
+				moveout = 0;
 			}
 			
 			break;
