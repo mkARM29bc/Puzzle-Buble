@@ -1,7 +1,7 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
-extern GLuint baseTextureId;
+extern GLuint baseTextureId[];
 extern GLuint programId;
 extern glm::mat4 perspectiveMatrix;
 extern glm::mat4 cameraMatrix;

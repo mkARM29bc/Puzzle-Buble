@@ -14,8 +14,15 @@
 #define SPACEBAR 32
 
 const int NUMBER_OBJECTS = 8;
-int lines = 8;
-int rows = 8;
+const int lines = 8;
+const int rows = 8;
+
+//Rui
+int visitedBalls[lines][rows];
+int toDestroyBalls[lines][rows];
+bool visiting=false;
+int sumBalls=0;
+//
 
 //int colorBalls[NUMBER_OBJECTS][NUMBER_OBJECTS];
 bool inited = false; //Have we done initialization?
@@ -45,14 +52,14 @@ float dispx=-35.0f;
 
 
 
-	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj")};
+	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj")};
 
 
 GLuint vertexShaderId;
 GLuint fragShaderId;
 GLuint programId;
 
-GLuint baseTextureId;
+GLuint baseTextureId[objloader];
 GLuint specularTextureId;
 
 
@@ -175,9 +182,6 @@ GLfloat POSITION[1][2][8][2] = {{{
 },{
 	{0.0f,0.0f},{-24.0f,63.0f},{-16.0f,63.0f},{-8.0f,63.0f},{0.0f,63.0f},{8.0f,63.0f},{16.0f,63.0f},{24.0f,63.0f}
 }}};
-
-//OBJLoader object("../models/haywagon/haywagon_tris.obj");
-//OBJLoader object1("../models/esfera1.obj");
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
@@ -413,6 +417,14 @@ GLuint loadTexture(char* textureFile)
 	All initialization procedures should be performed here.
 */
 
+
+	void resetVisited(void){
+		for (int i=0;i<lines;i++)
+			for (int j=0;j<rows;j++)
+			{visitedBalls[i][j]=0;
+			toDestroyBalls[i][j]=0;
+		}
+	}
 void init(void) 
 {
 	
@@ -421,9 +433,10 @@ void init(void)
 	GLEW initialization.
 	activate GLEW experimental features to have access to the most recent OpenGL, and then call glewInit.
 	it is important to know that this must be done only when a OpenGL context already exists, meaning, in this case, glutCreateWindow has already been called.
-	
 	*/
+
 	
+
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 
@@ -449,8 +462,11 @@ void init(void)
 	//initGeometry();
 	//object.print();
 
-	baseTextureId = loadTexture("../models/textures/sky.dds");
-	
+
+	baseTextureId[0] = loadTexture("../models/textures/sky.dds");
+	baseTextureId[1]=loadTexture("../models/textures/sky.dds");
+	baseTextureId[2]=loadTexture("../models/textures/sky.dds");
+	baseTextureId[3]=loadTexture("");
 	//Rui edit
 	glClearColor(0.8f, 0.8f, 1.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
 	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
@@ -467,6 +483,10 @@ void init(void)
 
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+//	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	//glEnable (GL_BLEND); glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+
 	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 56);
@@ -511,12 +531,68 @@ void setBallColor(void){
 	diffuseColor[2] = 1.0f;
 	}
 	}
+
+
+
+	/* the surrounding indexes of a ball
+		l-- c--		l--	c	
+	l c--						l c++
+			l++	c		l++ c++
+	*/
+	void checkSurroundingBalls(int l, int c){
+	visitedBalls[l][c]=1;
+	toDestroyBalls[l][c]=1;
+	sumBalls++;
+	printf("\n \n SUMBALLS: %d",sumBalls);
+	int linha,coluna;
+	for (int ltemp=-1;ltemp<=1;ltemp++){
+		for (int ctemp=-1;ctemp<=1;ctemp++)
+		{
+			linha=l+ltemp;
+			coluna=c+ctemp;
+
+			if ((l+ltemp)>=0 && (l+ltemp)<=7 && (c+ctemp)>=0 && (c+ctemp)<=7){
+				printf(" teste linha:%d coluna:%d\n GAMEPLAY[0][linha][coluna][0] :%d\nGAMEPLAY[0][linha][coluna][1]:%d\ncolorActive%d\n",linha,coluna,GAMEPLAY[0][linha][coluna][0],GAMEPLAY[0][linha][coluna][1],colorActive);
+						if ((ltemp != ctemp || ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
+						{
+							checkSurroundingBalls(l+ltemp, c+ctemp);
+						}
+			
+						else
+						if ((visitedBalls[l+ltemp][c+ctemp]==0) && GAMEPLAY[0][l+ltemp][c+ctemp][1]!=colorActive )
+						{
+							visitedBalls[l+ltemp][c+ctemp]=1;
+						}
+				}
+		}
+	}
+
+	}
+
+	bool checkLine(int l,int c){
+		checkSurroundingBalls(l,c);
+		if (sumBalls>=3)
+		return true;
+		else 
+			return false;
+	}
+
+	void destroy(){
+	for (int i=0;i<8;i++)
+		for (int j=0;j<8;j++){
+			if (toDestroyBalls[i][j]==1)
+			{
+				 GAMEPLAY[0][i][j][0]=0;
+				 GAMEPLAY[0][i][j][1]=0; 
+			}
+		}}
+
 void display(void){
 	if (!inited) {
 		init();
 		inited = true;
 	}
-
+	
 	if (cameraPos[0][0]!=0.0f ||cameraPos[0][1]!= 30.0f|| cameraPos[0][2]!= 120.0f)
 	{
 		if (cameraPos[0][0] > 0.0f) cameraPos[0][0]-=0.1f;
@@ -629,7 +705,17 @@ void display(void){
 
 				//colorBalls[i][j]=colorActive;
 				GAMEPLAY[0][i][j][1] = colorActive;
+				
+				
+				if (checkLine(i,j)){
+					
+					destroy();
+					
+				}
+				sumBalls=0;
+				resetVisited();
 				colorActive=rand()%3+1;
+
 
 				if(j-1>=0)
 					if(GAMEPLAY[0][i][j-1][0] == 0)
@@ -817,7 +903,7 @@ void display(void){
 	//RUI
 	color=colorActive;
 	setBallColor();
-	//END RUI
+	//END RUI 
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	
 	for(int i=0;i<players;i++){
@@ -846,10 +932,13 @@ void display(void){
 	display_at(1, 33.0f, -10.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,87.0f,2.0f);
 
 	
+	
 	//dispx+=0.00035f;
 	//RUI - GLOBE
 	display_at(2, dispx, -dispx, -100.0f, 1.0f,1.0f, 1.0f, 1.0f,100.0f,100.0f,100.0f);
 	//END 
+
+	display_at(3, 0.0f, -0.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,2.0f,2.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);

@@ -3,7 +3,7 @@
 
 #include "objloader.h"
 
-const int objloader = 3;
+const int objloader = 4;
 
 
 extern GLuint vao[objloader];
