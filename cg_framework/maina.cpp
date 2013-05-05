@@ -186,7 +186,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
-//GLfloat TOP_BORDER = POSITION[0][0][0][1];
+GLfloat TOP_BORDER = POSITION[0][0][0][1];
 //GLfloat BALL_BORDER[1] = {};
 
 /* 
@@ -535,10 +535,7 @@ void setBallColor(void){
 
 
 
-	/* 
-	
-		Check surrounding balls of the given as argument, as long as they are not tagged as visited and different color
-		the surrounding indexes of a ball and change their value them to toDestroyBalls vector as 1
+	/* the surrounding indexes of a ball
 		l-- c--		l--	c	
 	l c--						l c++
 			l++	c		l++ c++
@@ -574,8 +571,6 @@ void setBallColor(void){
 
 	}
 
-	// for all surroundig balls, checks if there are some of the same color. If >3 connected, returns true
-
 	bool checkLine(int l,int c){
 		checkSurroundingBalls(l,c);
 		if (sumBalls>=3)
@@ -586,64 +581,33 @@ void setBallColor(void){
 	
 	
 	
-	// adds ball given as argument to toDestroy vector in a empty position - toDestroy[positiont][0]==0.0f
-
+	
 	void queueDestruction(int linha,int coluna){
 	int positiont=0;
 
 	while ( toDestroy[positiont][0]!=0.0f)
 	{positiont++;}
 
-	toDestroy[positiont][0]=1.0f;												//check To Destroy
-	toDestroy[positiont][1]=POSITION[0][linha%2][coluna][0];					//x
-	toDestroy[positiont][2]=POSITION[0][linha%2][coluna][1] -14.0*(linha/2);	//y
-	toDestroy[positiont][3]=0.0f;												//z
-	toDestroy[positiont][4]=GAMEPLAY[0][linha][coluna][1];						//color
-	toDestroy[positiont][5]=1.0f;												//possible variation of destruction animation
-	GAMEPLAY[0][linha][coluna][1]=0;
-	GAMEPLAY[0][linha][coluna][0]=0;
+	toDestroy[positiont][0]=1.0f;
+	toDestroy[positiont][1]=GAMEPLAY[0][linha][coluna][1];
+	toDestroy[positiont][2]=GAMEPLAY[0][linha][coluna][2];
+	toDestroy[positiont][3]=GAMEPLAY[0][linha][coluna][3];
+	toDestroy[positiont][4]=1.0f;
+	toDestroy[positiont][5]=1.0f;
+	
 
 }
 
-		// draws and animates balls to be destroyed
-
-	void proceedDestruction(void){
-	for (int i=0;i < 20;i++){
-		if (toDestroy[i][0]==1.0f){
-
-			color = toDestroy[i][4];
-			setBallColor();
-			printf("COLOR %d\n",color);
-			toDestroy[i][3]=toDestroy[i][3]+0.7f;
-			
-			//
-			display_at(0,toDestroy[i][1],toDestroy[i][2],toDestroy[i][3], 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-			if (toDestroy[i][3]>=100.0f)
-				toDestroy[i][0]=0.0f;
-		}
-	}
-
-	}
-
-	// checks which balls are tagged to destruction and queue them in a new vector where they will be placed until destroyed animation finishes
-
-void destroy(){
-	for (int i=0;i<8;i++){
+	void destroy(){
+	for (int i=0;i<8;i++)
 		for (int j=0;j<8;j++){
 			if (toDestroyBalls[i][j]==1)
 			{
 				queueDestruction(i,j);
 				 GAMEPLAY[0][i][j][0]=0;
 				 GAMEPLAY[0][i][j][1]=0; 
-				 toDestroyBalls[i][j]=0;
-
 			}
-
-			
-		}
-	
-	}
-}
+		}}
 
 
 void display(void){
@@ -770,60 +734,28 @@ void display(void){
 					
 					destroy();
 					
-					for (int i=0;i<lines;i++)
-						for(int j=0;j<rows;j++){
-
-							if(GAMEPLAY[0][i][j][0] == 1){
-								if(j-1>=0)
-									if(GAMEPLAY[0][i][j-1][0] == 0)
-										GAMEPLAY[0][i][j-1][0] = 2;
-										
-
-								if(j+1<8)
-									if(GAMEPLAY[0][i][j+1][0] == 0){
-										GAMEPLAY[0][i][j+1][0] = 2;
-								}
-								if(i+1<lines){
-									if(GAMEPLAY[0][i+1][j][0] == 0){
-										GAMEPLAY[0][i+1][j][0] = 2;
-									}
-									if(j-1>=0){
-										if(GAMEPLAY[0][i+1][j-1][0] == 0){
-											GAMEPLAY[0][i+1][j-1][0] = 2;
-
-										}
-									}
-
-								}
-
-							}
-
-						}
-
 				}
-
-				else{
-					if(j-1>=0)
-						if(GAMEPLAY[0][i][j-1][0] == 0)
-							GAMEPLAY[0][i][j-1][0] = 2;
-
-					if(j+1<8)
-						if(GAMEPLAY[0][i][j+1][0] == 0)
-							GAMEPLAY[0][i][j+1][0] = 2;
-							
-					if(i+1<lines){
-						if(GAMEPLAY[0][i+1][j][0] == 0)
-							GAMEPLAY[0][i+1][j][0] = 2;
-
-						if(j+1<8)
-							if(GAMEPLAY[0][i+1][j+1][0] == 0)
-								GAMEPLAY[0][i+1][j+1][0] = 2;
-					}
-				}
-
 				sumBalls=0;
 				resetVisited();
 				colorActive=rand()%3+1;
+
+
+				if(j-1>=0)
+					if(GAMEPLAY[0][i][j-1][0] == 0)
+						GAMEPLAY[0][i][j-1][0] = 2;
+
+				if(j+1<8)
+					if(GAMEPLAY[0][i][j+1][0] == 0)
+						GAMEPLAY[0][i][j+1][0] = 2;
+							
+				if(i+1<lines){
+					if(GAMEPLAY[0][i+1][j][0] == 0)
+						GAMEPLAY[0][i+1][j][0] = 2;
+
+					if(j+1<8)
+						if(GAMEPLAY[0][i+1][j+1][0] == 0)
+							GAMEPLAY[0][i+1][j+1][0] = 2;
+				}
 				
 				for(int j=0;j<7;j++){
 					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
@@ -924,17 +856,6 @@ void display(void){
 
 	// RESTART_THE_GAME_SET
 	if (restart == 1){
-
-		for (int i=0;i<players;i++){
-			for (int j=0;j<8;j++){
-				for (int k=0;k<8;k++){
-					for(int l=0;l<2;l++){
-						GAMEPLAY[0][j][k][l] = 0;
-					}
-				}
-			}
-		}
-
 		for (int i=0;i<players;i++){
 			for (int j=0;j<8;j++){
 				for (int k=0;k<8;k++){
@@ -1022,8 +943,6 @@ void display(void){
 			}
 		}
 	}
-	
-	proceedDestruction();
 
 	display_at(1, 0.0f, -15.0f, 0.0f,pointerangle,0.0f, -1.0f, 1.0f,20.0f,3.0f,1.0f);
 	

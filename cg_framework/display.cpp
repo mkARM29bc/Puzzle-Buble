@@ -20,7 +20,7 @@ void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float r
 
 	loc = glGetUniformLocation(programId, "pMatrix");
 	glUniformMatrix4fv(loc, 1, GL_FALSE, (GLfloat *)&perspectiveMatrix[0]);
-	
+
 	loc = glGetUniformLocation(programId, "vMatrix");
 	glUniformMatrix4fv(loc, 1, GL_FALSE, (GLfloat *)&cameraMatrix[0]);
 	
