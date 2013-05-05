@@ -22,6 +22,7 @@ int visitedBalls[lines][rows];
 int toDestroyBalls[lines][rows];
 bool visiting=false;
 int sumBalls=0;
+float toDestroy[20][6]={0.0f} ; 
 //
 
 //int colorBalls[NUMBER_OBJECTS][NUMBER_OBJECTS];
@@ -534,7 +535,10 @@ void setBallColor(void){
 
 
 
-	/* the surrounding indexes of a ball
+	/* 
+	
+		Check surrounding balls of the given as argument, as long as they are not tagged as visited and different color
+		the surrounding indexes of a ball and change their value them to toDestroyBalls vector as 1
 		l-- c--		l--	c	
 	l c--						l c++
 			l++	c		l++ c++
@@ -542,6 +546,7 @@ void setBallColor(void){
 	void checkSurroundingBalls(int l, int c){
 	visitedBalls[l][c]=1;
 	toDestroyBalls[l][c]=1;
+	
 	sumBalls++;
 	printf("\n \n SUMBALLS: %d",sumBalls);
 	int linha,coluna;
@@ -569,6 +574,8 @@ void setBallColor(void){
 
 	}
 
+	// for all surroundig balls, checks if there are some of the same color. If >3 connected, returns true
+
 	bool checkLine(int l,int c){
 		checkSurroundingBalls(l,c);
 		if (sumBalls>=3)
@@ -576,16 +583,63 @@ void setBallColor(void){
 		else 
 			return false;
 	}
+	
+	
+	
+	// adds ball given as argument to toDestroy vector in a empty position - toDestroy[positiont][0]==0.0f
+
+	void queueDestruction(int linha,int coluna){
+	int positiont=0;
+
+	while ( toDestroy[positiont][0]!=0.0f)
+	{positiont++;}
+
+	toDestroy[positiont][0]=1.0f;												//check To Destroy
+	toDestroy[positiont][1]=POSITION[0][linha%2][coluna][0];					//x
+	toDestroy[positiont][2]=POSITION[0][linha%2][coluna][1] -14.0*(linha/2);	//y
+	toDestroy[positiont][3]=0.0f;												//z
+	toDestroy[positiont][4]=GAMEPLAY[0][linha][coluna][1];						//color
+	toDestroy[positiont][5]=1.0f;												//possible variation of destruction animation
+	
+
+}
+
+		// draws and animates balls to be destroyed
+
+	void proceedDestruction(void){
+	for (int i=0;i < 20;i++){
+		if (toDestroy[i][0]==1.0f){
+
+			color = toDestroy[i][4];
+			toDestroy[i][3]=toDestroy[i][3]+0.7f;
+			setBallColor();
+			//
+			display_at(0,toDestroy[i][1],toDestroy[i][2],toDestroy[i][3], 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+			if (toDestroy[i][3]>=5.0f)
+				toDestroy[i][0]==0.0f;
+		}
+	}
+
+	}
+
+	// checks which balls are tagged to destruction and queue them in a new vector where they will be placed until destroyed animation finishes
 
 	void destroy(){
 	for (int i=0;i<8;i++)
 		for (int j=0;j<8;j++){
 			if (toDestroyBalls[i][j]==1)
 			{
+				queueDestruction(i,j);
 				 GAMEPLAY[0][i][j][0]=0;
 				 GAMEPLAY[0][i][j][1]=0; 
+				 toDestroyBalls[i][j]=0;
 			}
-		}}
+
+			
+		}
+	
+	}
+
 
 void display(void){
 	if (!inited) {
@@ -920,6 +974,8 @@ void display(void){
 			}
 		}
 	}
+	
+	proceedDestruction();
 
 	display_at(1, 0.0f, -15.0f, 0.0f,pointerangle,0.0f, -1.0f, 1.0f,20.0f,3.0f,1.0f);
 	
