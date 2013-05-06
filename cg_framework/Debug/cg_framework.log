@@ -1,30 +1,34 @@
-﻿Build started 06/05/2013 16:01:01.
-     1>Project "C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
+﻿Build started 06-05-2013 18:15:31.
+     1>Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"..\external libs\glew\include" /I"..\external libs\FreeImage\Dist" /I"..\external libs\freeglut\include" /I"..\external libs\glm" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(297): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(297): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(594): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(596): warning C4244: '=' : conversion from 'GLint' to 'float', possible loss of data
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(609): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(786): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(788): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(791): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(793): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(1070): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(1239): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(1249): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(1266): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
-     1>c:\users\rui orey\cgarmindo\puzzle-buble\cg_framework\main.cpp(1281): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(594): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(596): warning C4244: '=' : conversion from 'GLint' to 'float', possible loss of data
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(609): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(651): warning C4101: 'i' : unreferenced local variable
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(653): warning C4101: 'distanceX' : unreferenced local variable
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(653): warning C4101: 'distanceY' : unreferenced local variable
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(651): warning C4101: 'j' : unreferenced local variable
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(952): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(954): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(957): warning C4305: '-=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(959): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(1252): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(1421): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(1431): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(1448): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>c:\users\cunha\documents\visual studio 2012\projects\github_associated\puzzle-buble\cg_framework\main.cpp(1463): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Debug\cg_framework.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Debug\cg_framework.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Debug\cg_framework.lib" /MACHINE:X86 Debug\colision.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Debug\cg_framework.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Debug\cg_framework.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Debug\cg_framework.lib" /MACHINE:X86 Debug\colision.obj
          Debug\display.obj
          Debug\main.obj
          Debug\objloader.obj
-         cg_framework.vcxproj -> C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Debug\cg_framework.exe
-     1>Done Building Project "C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\cg_framework\cg_framework.vcxproj" (Build target(s)).
+         cg_framework.vcxproj -> C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Debug\cg_framework.exe
+     1>Done Building Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\cg_framework\cg_framework.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.20
+Time Elapsed 00:00:03.18
