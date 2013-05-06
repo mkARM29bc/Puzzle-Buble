@@ -646,46 +646,6 @@ void collide_cases(int x,int y,int p0,int p1){
 
 }
 
-void found_empty(int x,int y, int p0,int p1){
-
-	int i,j;
-	//int cases = 0;
-	float distanceX,distanceY;
-
-	//PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0
-
-	if(x-1>=0){
-		if(y-1<0){
-			if(GAMEPLAY[0][x-1][y-1][0] == 0){
-			}
-		}
-	}
-
-	/*
-	if(GAMEPLAY[0][i+1][j][0] == 0){
-		GAMEPLAY[0][i+1][j][0] = 2;
-	}
-	if(j-1>=0){
-		if(GAMEPLAY[0][i+1][j-1][0] == 0){
-			GAMEPLAY[0][i+1][j-1][0] = 2;
-			}
-	}
-	*/
-
-
-
-	/*
-	while (true){
-		if(cases == 6){
-			break;
-		}
-
-	}
-	*/
-
-}
-
-
 void found_empty(){
 
 	int i=0,j=0, foundX=0,foundY=0;
@@ -732,7 +692,12 @@ void found_empty(){
 					for (int i=0;i<lines;i++)
 						for(int j=0;j<rows;j++){
 
-							if(GAMEPLAY[0][i][j][0] == 1){
+
+						if(i==0 && GAMEPLAY[0][i][j][0] == 0){
+							GAMEPLAY[0][i][j][0] = 2;
+						}
+
+						if(GAMEPLAY[0][i][j][0] == 1){
 								if(i%2 ==0){
 						if(j==0)
 							if(GAMEPLAY[0][i+1][j+1][0] == 0)
