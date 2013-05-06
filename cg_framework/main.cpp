@@ -476,15 +476,10 @@ void init(void)
 
 	// Rui
 
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-	glEnable(GL_SAMPLE_SHADING);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	
+	glEnable(GL_BLEND);
 
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
+	
 //	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	//glEnable (GL_BLEND); glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 
@@ -613,7 +608,7 @@ void setBallColor(void){
 
 			color = toDestroy[i][4];
 			setBallColor();
-			printf("COLOR %d\n",color);
+			//printf("COLOR %d\n",color);
 			toDestroy[i][3]=toDestroy[i][3]+0.7f;
 			
 			//
@@ -645,6 +640,130 @@ void destroy(){
 	}
 }
 
+
+
+void found_empty(void){
+
+	int i=0,j=0, foundX=0,foundY=0;
+
+			while (true){
+
+				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
+					break;
+				}
+				if (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //8
+					foundY = 1;
+				}
+				else{
+					j = j+1;
+				}
+				if (PLAYER[0][1] <= (70.0-i*7.0)+3.5   && PLAYER[0][1] >= (70.0-i*7.0)-3.5){ //7
+					foundX = 1;
+				}
+				else{
+					i = i+1;
+				}
+			}
+			
+			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
+				
+				GAMEPLAY[0][i][j][0] = 1;
+
+				//colorBalls[i][j]=colorActive;
+				GAMEPLAY[0][i][j][1] = colorActive;
+				
+				
+				if (checkLine(i,j)){
+					
+					destroy();
+					
+					for (int i=0;i<lines;i++)
+						for(int j=0;j<rows;j++){
+							if(GAMEPLAY[0][i][j][0] == 2){
+								GAMEPLAY[0][i][j][0] = 0;
+							}
+						}
+					
+
+					for (int i=0;i<lines;i++)
+						for(int j=0;j<rows;j++){
+
+							if(GAMEPLAY[0][i][j][0] == 1){
+								if(j-1>=0)
+									if(GAMEPLAY[0][i][j-1][0] == 0)
+										GAMEPLAY[0][i][j-1][0] = 2;
+										
+
+								if(j+1<rows)
+									if(GAMEPLAY[0][i][j+1][0] == 0){
+										GAMEPLAY[0][i][j+1][0] = 2;
+								}
+								if(i+1<lines){
+									if(GAMEPLAY[0][i+1][j][0] == 0){
+										GAMEPLAY[0][i+1][j][0] = 2;
+									}
+									if(j-1>=0){
+										if(GAMEPLAY[0][i+1][j-1][0] == 0){
+											GAMEPLAY[0][i+1][j-1][0] = 2;
+
+										}
+									}
+
+								}
+
+							}
+
+						}
+
+				}
+
+				else{
+					if(j-1>=0)
+						if(GAMEPLAY[0][i][j-1][0] == 0)
+							GAMEPLAY[0][i][j-1][0] = 2;
+
+					if(j+1<8)
+						if(GAMEPLAY[0][i][j+1][0] == 0)
+							GAMEPLAY[0][i][j+1][0] = 2;
+							
+					if(i+1<lines){
+						if(GAMEPLAY[0][i+1][j][0] == 0)
+							GAMEPLAY[0][i+1][j][0] = 2;
+
+						if(j+1<8)
+							if(GAMEPLAY[0][i+1][j-1][0] == 0)
+								GAMEPLAY[0][i+1][j-1][0] = 2;
+					}
+				}
+
+				sumBalls=0;
+				resetVisited();
+				colorActive=rand()%3+1;
+				
+				for(int j=0;j<7;j++){
+					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
+				}
+				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
+				for(int j=0;j<2;j++){
+					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
+				}
+				move = 0;
+
+				for (int j=0;j<8;j++){
+					if(j%2==1){
+						printf(" ");
+					}
+					for (int k=0;k<8;k++){
+						if(GAMEPLAY[0][j][k][0] != -1){
+							printf("%d ",GAMEPLAY[0][j][k][0]);
+						}
+					}
+				printf("\n");
+				}
+
+			}
+
+}
 
 void display(void){
 	if (!inited) {
@@ -712,8 +831,6 @@ void display(void){
 			
 			if(MOVE_PLAYER_TRANSLATE[0][0] == 0.0f){
 				PLAYER[0][5] = 0.0f;
-
-
 			}
 			
 			else{
@@ -734,115 +851,45 @@ void display(void){
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
 			}
 
+
 			int i=0,j=0, foundX=0,foundY=0;
+
+			/*
+			
+GLfloat POSITION[1][2][8][2] = {{{
+	{-28.0f,70.0f},{-20.0f,70.0f},{-12.0f,70.0f},{-4.0f,70.0f},{4.0f,70.0f},{12.0f,70.0f},{20.0f,70.0f},{28.0f,70.0f}
+},{
+	{0.0f,0.0f},{-24.0f,63.0f},{-16.0f,63.0f},{-8.0f,63.0f},{0.0f,63.0f},{8.0f,63.0f},{16.0f,63.0f},{24.0f,63.0f}
+}}};
+			*/
 
 			while (true){
 
-				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
+
+
+				if ((foundX == 1 && foundY == 1) || (i==lines && j == rows)){
 					break;
 				}
-				
-				if (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //8
+				if (PLAYER[0][0] <= (-28.0+j*8.0)+8.0 && PLAYER[0][0] >= (-28.0+j*8.0)-8.0){ //8
 					foundY = 1;
 				}
 				else{
 					j = j+1;
 				}
-				
-				if (PLAYER[0][1] <= (70.0-i*7.0)+3.5   && PLAYER[0][1] >= (70.0-i*7.0)-3.5){ //7
+				if (PLAYER[0][1] <= (70.0-i*7.0)+7.0   && PLAYER[0][1] >= (70.0-i*7.0)-7.0){ //7
 					foundX = 1;
 				}
 				else{
 					i = i+1;
 				}
-
 			}
 			
-			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
-				
-				GAMEPLAY[0][i][j][0] = 1;
-
-				//colorBalls[i][j]=colorActive;
-				GAMEPLAY[0][i][j][1] = colorActive;
-				
-				
-				if (checkLine(i,j)){
-					
-					destroy();
-					
-					for (int i=0;i<lines;i++)
-						for(int j=0;j<rows;j++){
-
-							if(GAMEPLAY[0][i][j][0] == 1){
-								if(j-1>=0)
-									if(GAMEPLAY[0][i][j-1][0] == 0)
-										GAMEPLAY[0][i][j-1][0] = 2;
-										
-
-								if(j+1<8)
-									if(GAMEPLAY[0][i][j+1][0] == 0){
-										GAMEPLAY[0][i][j+1][0] = 2;
-								}
-								if(i+1<lines){
-									if(GAMEPLAY[0][i+1][j][0] == 0){
-										GAMEPLAY[0][i+1][j][0] = 2;
-									}
-									if(j-1>=0){
-										if(GAMEPLAY[0][i+1][j-1][0] == 0){
-											GAMEPLAY[0][i+1][j-1][0] = 2;
-
-										}
-									}
-
-								}
-
-							}
-
-						}
-
-				}
-
-				else{
-					if(j-1>=0)
-						if(GAMEPLAY[0][i][j-1][0] == 0)
-							GAMEPLAY[0][i][j-1][0] = 2;
-
-					if(j+1<8)
-						if(GAMEPLAY[0][i][j+1][0] == 0)
-							GAMEPLAY[0][i][j+1][0] = 2;
-							
-					if(i+1<lines){
-						if(GAMEPLAY[0][i+1][j][0] == 0)
-							GAMEPLAY[0][i+1][j][0] = 2;
-
-						if(j+1<8)
-							if(GAMEPLAY[0][i+1][j+1][0] == 0)
-								GAMEPLAY[0][i+1][j+1][0] = 2;
-					}
-				}
-
-				sumBalls=0;
-				resetVisited();
-				colorActive=rand()%3+1;
-				
-				for(int j=0;j<7;j++){
-					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
-				}
-				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
-				for(int j=0;j<2;j++){
-					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
-				}
-				move = 0;
-
-				for (int j=0;j<8;j++){
-					for (int k=0;k<8;k++){
-						if(GAMEPLAY[0][j][k][0] != -1)
-							printf("%d ",GAMEPLAY[0][j][k][0]);
-					}
-				printf("\n");
-				}
-
+			if ((GAMEPLAY[0][i][j][0] == 1 && foundX == 1 && foundY == 1) || (i==0 && foundY == 1 && GAMEPLAY[0][i][j][0] == 2)){
+			found_empty();
+			 move=0;
+			printf("Encontrou colisao");
 			}
+
 
 			/*
 			if(PLAYER[0][1] > TOP_BORDER){
@@ -992,6 +1039,9 @@ void display(void){
 		restart = 0;
 
 		for (int j=0;j<8;j++){
+			if(j%2==1){
+				printf(" ");
+				}
 			for (int k=0;k<8;k++){
 				if(GAMEPLAY[0][j][k][0] != -1)
 					printf("%d ",GAMEPLAY[0][j][k][0]);
