@@ -722,17 +722,22 @@ void found_empty(){
 					for (int i=0;i<lines;i++)
 						for(int j=0;j<rows;j++){
 
-							if(j==0 && GAMEPLAY[0][i][j][0] == 0){
+							if(i==0 && GAMEPLAY[0][i][j][0] == 0){
 								GAMEPLAY[0][i][j][0] = 2;
 							}
 
 							if(GAMEPLAY[0][i][j][0] == 1){
 								if(i%2 ==0){
-									if(j==0)
-										if(GAMEPLAY[0][i+1][j+1][0] == 0)
-											GAMEPLAY[0][i+1][j+1][0] = 2;
+									
 
+									if(j==0)
+										if(GAMEPLAY[0][i+1][j+1][0] == 0){
+											GAMEPLAY[0][i+1][j+1][0] = 2;
+											
+										}
+										
 									if(i-1>=0){
+										
 										if(GAMEPLAY[0][i-1][j][0] == 0)
 											GAMEPLAY[0][i-1][j][0] = 2;
 
@@ -800,11 +805,14 @@ void found_empty(){
 				}
 
 				else{
+					
 					if(i%2 ==0){
+
 						if(j==0)
 							if(GAMEPLAY[0][i+1][j+1][0] == 0)
 								GAMEPLAY[0][i+1][j+1][0] = 2;
-
+								
+							
 						if(i-1>=0){
 							if(GAMEPLAY[0][i-1][j][0] == 0)
 								GAMEPLAY[0][i-1][j][0] = 2;
