@@ -54,7 +54,7 @@ float dispx=-35.0f;
 
 
 
-	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj")};
+	OBJLoader object[objloader] = {("../models/cube.obj"),("../models/cube.obj"),("../models/esfera1.obj"),("../models/cone2.obj")};
 
 
 GLuint vertexShaderId;
@@ -1424,18 +1424,14 @@ void keyboard(unsigned char key, int x, int y)
 	
 		case 'c':
 			
-			if (cameraMode != 1 ){
+			if (cameraMode == 0 ){
 			//move=1;
 			cameraChange=0;
 			cameraMode +=1;
 			}
 
-			else{
-				if (cameraMode != 3 ){
-			//move=1;
-			cameraChange=0;
-			cameraMode +=1;
-			}
+			
+				
 				else{
 			cameraPosCameraChanger[0]=cameraPos[cameraMode][0];
 			cameraPosCameraChanger[1]=cameraPos[cameraMode][1];
@@ -1477,8 +1473,9 @@ void keyboard(unsigned char key, int x, int y)
 			cameraUpRatio[2]=(abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))/1000;
 			
 			//dynamic camera change only happens from 3rd to 1st person
-				}}
-				if(cameraMode == 4) {
+				}
+
+			if(cameraMode == 4) {
 				cameraMode = 0;
 			}
 			break;
@@ -1699,7 +1696,7 @@ void setupCamera(void)
 			//tests if there is a significative distance of the camera that is animating the change and the destiny camera coordinates (for now only Postition)
 				
 
-			if (cameraMode==0){
+			/*if (cameraMode==0){
 
 				
 				if (((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>=cameraUpRatio[0]) && ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>=cameraUpRatio[1]) &&((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>=cameraUpRatio[2]))
@@ -1723,7 +1720,9 @@ void setupCamera(void)
 									cameraPosCameraChanger=cameraPos[cameraMode];
 					}
 				}}}
-			else{
+			else{*/
+				
+				
 				if ( ((abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))>=cameraPosRatio[0]) && ((abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))>=cameraPosRatio[2]) && ((abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))>=cameraPosRatio[1]) 
 					&& abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0])>=cameraViewRatio[0] && ((abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))>=cameraViewRatio[1]) &&((abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))>=cameraViewRatio[2]) && ((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>=cameraUpRatio[0]) && ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>=cameraUpRatio[1]) && ((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>=cameraUpRatio[2]) )
 								{
@@ -1740,7 +1739,7 @@ void setupCamera(void)
 									cameraChange=0;
 									cameraPosCameraChanger=cameraPos[cameraMode];
 					}
-				}		
+				//}		
 	}
 	//printf("camerachange %d.",cameraChange);
 //	cameraView[4][0]=PLAYER[0][0];
