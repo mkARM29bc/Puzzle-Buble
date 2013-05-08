@@ -13,13 +13,15 @@
 
 #define SPACEBAR 32
 
+
+
 const int NUMBER_OBJECTS = 8;
 const int lines = 8;
 const int rows = 8;
 
 //Rui
 int visitedBalls[lines][rows];
-int toDestroyBalls[lines][rows];
+float toDestroyBalls[lines][rows];
 bool visiting=false;
 int sumBalls=0;
 float toDestroy[20][6]={0.0f} ; 
@@ -52,7 +54,6 @@ float dispx=-35.0f;
 
 
 
-
 	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj")};
 
 
@@ -69,12 +70,31 @@ GLuint geomId;
 GLuint normalsId;
 GLuint texUVId;
 
+
 glm::mat4 perspectiveMatrix;
 glm::mat4 cameraMatrix;
 
-glm::vec3 cameraPos[3]={glm::vec3(10.0f, 120.0f, -120.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, -10.0f)};
-glm::vec3 cameraView[3]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, 0.0f, 10.0f)};
-glm::vec3 cameraUp[3]={glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, -1.0f)};
+
+// can have three values. 0 means that no camera change is active. 1 means that a camera change is active and "move" was 0 before camera change, 2 camera change active but move was 1.
+int cameraChange=0;
+
+float cameraPosRatio[3];
+float cameraViewRatio[3];
+float cameraUpRatio[3];
+
+
+
+
+
+glm::vec3 cameraPos[4]={glm::vec3(10.0f, 120.0f, -120.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, 10.0f),glm::vec3(0.0f, 35.0f, 150.0f)};
+glm::vec3 cameraView[4]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f, 0.0f, -10.0f),glm::vec3(0.0f, 0.0f, -1.0f)};
+glm::vec3 cameraUp[4]={glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, -1.0f)};
+
+
+
+glm::vec3 cameraPosCameraChanger=glm::vec3(10.0f, 120.0f, -120.0f);
+glm::vec3 cameraViewCameraChanger=glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUpCameraChanger=glm::vec3(0.0f, 1.0f, -1.0f);
 
 float angle = -1.57079633f;
 float angle2 = 0.0f;
@@ -96,16 +116,31 @@ int players = 1;
 //Rui - controls light movements
 bool increment=false;
 bool incrementy=true;
+bool incrementDiffuseBall=true;
+bool incrDiffuseExplo=false;
+bool destructionOngoing=false;
+
+int destroyCounter=0;
+float ambientDestroyer=1.0f;
 
 GLfloat lightDir[] = {1.0f,  -0.5f, 1.0f};
 GLfloat lightIntensity[] = {0.9f, 0.9f, 0.9f, 0.0f};
 
+GLfloat lightIntensityBallNormal[] = {1.0f,  -0.5f, 1.0f, 0.0f};
+GLfloat lightIntensityBallDestroy[] = {1.0f,  -0.5f, 1.0f, 0.0f};
+
 GLfloat ambientComponent[] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+
+GLfloat diffuseColorBallNormal[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuseColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-//GLfloat object_trans[] = {0.0f, -10.0f, 0.0f}; 
-//GLfloat object_rotate[] = {1.0f, 0.0f, 0.0f};
-//float object_angle = 0.0f;
+GLfloat ambient;
+
+bool exploding;
+float diffused=1.5f;
+float diffusedExplosion=1.5f;
+
 GLfloat PLAYER_ORIGINAL[1][7] = {0.0f, -10.0f, 0.0f,0.0f,1.0f, 0.0f, 0.0f};
 GLfloat PLAYER[1][7] = {0.0f, -10.0f, 0.0f,0.0f,1.0f, 0.0f, 0.0f};
 GLfloat MOVE_PLAYER_ORIGINAL[1][2] = {0.0f,1.0f};
@@ -508,15 +543,18 @@ void init(void)
 
 //float t = 0;
 void setBallColor(void){
-		if (color==1){
+	if (destructionOngoing){
+	if (color==1){
 	
-	diffuseColor[0] = 1.0f;
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = diffusedExplosion;
 	diffuseColor[1] = 0.0f;
 	diffuseColor[2] = 0.0f;
 	}
 	if (color==2){
 	diffuseColor[0] = 0.0f;
-	diffuseColor[1] = 1.0f;
+	//diffuseColor[1] = 1.0f;
+	diffuseColor[1] = diffusedExplosion;
 	diffuseColor[2] = 0.0f;
 
 	}
@@ -524,7 +562,32 @@ void setBallColor(void){
 	
 	diffuseColor[0] = 0.0f;
 	diffuseColor[1] = 0.0f;
-	diffuseColor[2] = 1.0f;
+	//diffuseColor[2] = 1.0f;
+	diffuseColor[2] = diffusedExplosion;
+	}
+	}
+	else{
+	if (color==1){
+	
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = diffused;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
+	}
+	if (color==2){
+	diffuseColor[0] = 0.0f;
+	//diffuseColor[1] = 1.0f;
+	diffuseColor[1] = diffused;
+	diffuseColor[2] = 0.0f;
+
+	}
+	if (color==3){
+	
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	//diffuseColor[2] = 1.0f;
+	diffuseColor[2] = diffused;
+	}
 	}
 	}
 
@@ -607,17 +670,42 @@ void setBallColor(void){
 		if (toDestroy[i][0]==1.0f){
 
 			color = toDestroy[i][4];
+			destructionOngoing=true;
+			
+			destroyCounter++;
+			if (destroyCounter<1000 && destroyCounter!=0)
+			{
+				ambientDestroyer+=1.001f;
+				setBallColor();
+				move=0;
+			
+				//ambientComponent = {1.0f, 1.0f, 1.0f, 1.0f};
+			}
+			else{
+			
 			setBallColor();
 			//printf("COLOR %d\n",color);
-			toDestroy[i][3]=toDestroy[i][3]+0.7f;
-			
+			toDestroy[i][3]=toDestroy[i][3]+0.1f;
+			}
 			//
+			ambientComponent[0]=1.0f;
+			ambientComponent[1]=1.0f;
+			ambientComponent[2]=1.0f;
+			ambientComponent[3]=1.0f;
 			display_at(0,toDestroy[i][1],toDestroy[i][2],toDestroy[i][3], 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-			if (toDestroy[i][3]>=100.0f)
+			exploding=true;
+			if (ambient >0.1f)
+			ambient-=0.004f;
+			destructionOngoing=false;
+			if (toDestroy[i][3]>=100.0f){
 				toDestroy[i][0]=0.0f;
-		}
-	}
+				destroyCounter=1000;}
+		
+			
+			}
 
+	}
+	
 	}
 
 	// checks which balls are tagged to destruction and queue them in a new vector where they will be placed until destroyed animation finishes
@@ -708,8 +796,14 @@ void found_empty(){
 				
 				
 				if (checkLine(i,j)){
-					
+				if (lightIntensity[color]<10.0f)
+				{
+				lightIntensity[color]+=0.2f;
+				
+				}
+
 					destroy();
+				
 					
 					for (int i=0;i<lines;i++)
 						for(int j=0;j<rows;j++){
@@ -805,7 +899,7 @@ void found_empty(){
 				}
 
 				else{
-					
+		
 					if(i%2 ==0){
 
 						if(j==0)
@@ -939,13 +1033,16 @@ void display(void){
 		inited = true;
 	}
 	
+	
 	if (cameraPos[0][0]!=0.0f ||cameraPos[0][1]!= 30.0f|| cameraPos[0][2]!= 120.0f)
-	{
-		if (cameraPos[0][0] > 0.0f) cameraPos[0][0]-=0.1f;
-		if (cameraPos[0][1] > 30.0f) cameraPos[0][1]-=0.1f;
-		if (cameraPos[0][2] < 120.0f) cameraPos[0][2]+=0.1f;
+				{
+				if (cameraPos[0][0] > 0.0f) cameraPos[0][0]-=0.1f;
+				if (cameraPos[0][1] > 30.0f) cameraPos[0][1]-=0.1f;
+				if (cameraPos[0][2] < 120.0f) cameraPos[0][2]+=0.1f;
 
-	}
+				}
+		
+
 
 
 	if (move==0 && (PLAYER[0][0] == PLAYER_ORIGINAL[0][0]) && (PLAYER[0][1] == PLAYER_ORIGINAL[0][1]) && (angle!=-1.57079633f || angle2!=0.0f) ){
@@ -1070,43 +1167,12 @@ GLfloat POSITION[1][2][8][2] = {{{
 			
 			if ((GAMEPLAY[0][i][j][0] == 1 && foundX == 1 && foundY == 1) || (i==0 && foundY == 1 && GAMEPLAY[0][i][j][0] == 2)){
 				found_empty();
-				move=0;
+				//move=0;
 				printf("\n colisao1  i = %d and j = %d \n",i,j);
 				printf("Encontrou colisao");
 			}
 
 
-			/*
-			if(PLAYER[0][1] > TOP_BORDER){
-
-				float interval = abs(POSITION[0][0][0][0] - PLAYER[0][0]);
-				int j = 0;
-				move = 0;
-
-				//Rui edit
-				
-				// edit
-				for (int i=1;i<8;i++){
-					if(((abs(POSITION[0][0][i][0] - PLAYER[0][0])) <= interval) && (GAMEPLAY[0][0][i][0] == 0)){
-						j = i;
-						interval = abs(POSITION[0][0][i][0] - PLAYER[0][0]);
-					}
-				}
-				GAMEPLAY[0][0][j][0] = 1;
-
-				//RUI
-				colorBalls[0][j]=colorActive;
-				colorActive=rand()%3+1;
-				//
-				for(int j=0;j<7;j++){
-					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
-				}
-				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
-				for(int j=0;j<2;j++){
-					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
-				}
-			}
-			*/
 		}
 	}
 	
@@ -1122,7 +1188,9 @@ GLfloat POSITION[1][2][8][2] = {{{
 	
 	if (increment){
 		lightDir[0]=lightDir[0]+0.001f;
+		//diffused+=0.1f;
 		}
+
 
 	if (lightDir[0]>=1.0)
 	{increment=false;}
@@ -1130,14 +1198,16 @@ GLfloat POSITION[1][2][8][2] = {{{
 	if (!increment)
 	{		
 		lightDir[0]=lightDir[0]-0.001f;
-		
+	//	diffused-=0.1f;	
 	}
+
 	if (lightDir[0]<=-1.0)
 	{increment=true;}
 
 
 		if (incrementy){
 		lightDir[1]=lightDir[1]+0.001f;
+		
 		}
 
 	if (lightDir[1]>=1.0)
@@ -1151,7 +1221,21 @@ GLfloat POSITION[1][2][8][2] = {{{
 	if (lightDir[1]<=-1.0)
 	{incrementy=true;}
 
+	if (incrementDiffuseBall){
+	diffused+=0.001f;}
+	else{diffused-=0.001f;}
 
+	if (diffused>=1.6f){incrementDiffuseBall=false;}
+	if (diffused<=1.0f){incrementDiffuseBall=true;}
+
+	//blinking exploding ball
+	
+	if (incrDiffuseExplo){diffusedExplosion+=0.05f;}
+	else{diffusedExplosion-=0.05f;}
+
+	if (diffusedExplosion>=2.0f){incrDiffuseExplo=false;}
+	if (diffusedExplosion<=0.5f){incrDiffuseExplo=true;}
+	
 
 
 	// RESTART_THE_GAME_SET
@@ -1257,7 +1341,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 			}
 		}
 	}
-	
+	exploding=false;
 	proceedDestruction();
 
 	display_at(1, 0.0f, -15.0f, 0.0f,pointerangle,0.0f, -1.0f, 1.0f,20.0f,3.0f,1.0f);
@@ -1317,14 +1401,63 @@ void reshape (int w, int h)
 */
 	
 void keyboard(unsigned char key, int x, int y)
-{
+{if (!exploding)
 	switch (key) {
 		case 27:
 			exit(0);
 			break;
+	
 		case 'c':
+			
+			if (cameraMode != 1){
+			//move=1;
+			cameraChange=0;
 			cameraMode +=1;
+			}
+
+			else{
+			cameraPosCameraChanger[0]=cameraPos[cameraMode][0];
+			cameraPosCameraChanger[1]=cameraPos[cameraMode][1];
+			cameraPosCameraChanger[2]=cameraPos[cameraMode][2];
+			
+			cameraViewCameraChanger[0]=cameraView[cameraMode][0];
+			cameraViewCameraChanger[1]=cameraView[cameraMode][1];
+			cameraViewCameraChanger[2]=cameraView[cameraMode][2];
+
+			cameraUpCameraChanger[0]=cameraUp[cameraMode][0];
+			cameraUpCameraChanger[1]=cameraUp[cameraMode][1];
+			cameraUpCameraChanger[2]=cameraUp[cameraMode][2];
+			
+			
+			if (move==0){
+				cameraChange=1;
+			}
+			else {
+				cameraChange=2;
+			}
+			
+			move=0;
+			cameraMode +=1;
+
+			
 			if(cameraMode == 3) {
+				cameraMode = 0;
+			}
+			cameraPosRatio[0]=(abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))/200;
+			cameraPosRatio[1]=(abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))/200;
+			cameraPosRatio[2]=(abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))/200;
+
+			cameraViewRatio[0]=(abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0]))/1000;
+			cameraViewRatio[1]=(abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))/1000;
+			cameraViewRatio[2]=(abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))/1000;
+
+			cameraUpRatio[0]=(abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))/1000;
+			cameraUpRatio[1]=(abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))/1000;
+			cameraUpRatio[2]=(abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))/1000;
+			
+			//dynamic camera change only happens from 3rd to 1st person
+			}
+				if(cameraMode == 3) {
 				cameraMode = 0;
 			}
 			break;
@@ -1415,6 +1548,7 @@ void keyboard(unsigned char key, int x, int y)
 
 void keyboardSpecialKeys(int key, int x, int y)
 {
+	if (!exploding)
 	switch (key) {
 		case GLUT_KEY_LEFT:
 			//angle -= velocity;
@@ -1470,8 +1604,53 @@ void keyboardSpecialKeys(int key, int x, int y)
 	}
 }
 
+void ChangePos(void){
+				
+				if (cameraPosCameraChanger[0]>cameraPos[cameraMode][0]){cameraPosCameraChanger[0]=cameraPosCameraChanger[0]-cameraPosRatio[0];}
+				if (cameraPosCameraChanger[0]<cameraPos[cameraMode][0]){cameraPosCameraChanger[0]=cameraPosCameraChanger[0]+cameraPosRatio[0];}
+
+				if (cameraPosCameraChanger[1]>cameraPos[cameraMode][1]){cameraPosCameraChanger[1]=cameraPosCameraChanger[1]-cameraPosRatio[1];}
+				if (cameraPosCameraChanger[1]<cameraPos[cameraMode][1]){cameraPosCameraChanger[1]=cameraPosCameraChanger[1]+cameraPosRatio[1];}
+				
+				if (cameraPosCameraChanger[2]>cameraPos[cameraMode][2]){cameraPosCameraChanger[2]=cameraPosCameraChanger[2]-cameraPosRatio[2];}
+				if (cameraPosCameraChanger[2]<cameraPos[cameraMode][2]){cameraPosCameraChanger[2]=cameraPosCameraChanger[2]+cameraPosRatio[2];}
+				
+				}
+
+void ChangeView(void){
+				if (cameraViewCameraChanger[0]>cameraView[cameraMode][0]){cameraViewCameraChanger[0]=cameraViewCameraChanger[0]-cameraViewRatio[0];}
+				if (cameraViewCameraChanger[0]<cameraView[cameraMode][0]){cameraViewCameraChanger[0]=cameraViewCameraChanger[0]+cameraViewRatio[0];}
+
+				if (cameraViewCameraChanger[1]>cameraView[cameraMode][1]){cameraViewCameraChanger[1]=cameraViewCameraChanger[1]-cameraViewRatio[1];}
+				if (cameraViewCameraChanger[1]<cameraView[cameraMode][1]){cameraViewCameraChanger[1]=cameraViewCameraChanger[1]+cameraViewRatio[1];}
+				
+				if (cameraViewCameraChanger[2]>cameraView[cameraMode][2]){cameraViewCameraChanger[2]=cameraViewCameraChanger[2]-cameraViewRatio[2];}
+				if (cameraViewCameraChanger[2]<cameraView[cameraMode][2]){cameraViewCameraChanger[2]=cameraViewCameraChanger[2]+cameraViewRatio[2];}
+}
+void ChangeUp(void){
+				if (cameraUpCameraChanger[0]>cameraUp[cameraMode][0]){cameraUpCameraChanger[0]=cameraUpCameraChanger[0]-cameraUpRatio[0];}
+				if (cameraUpCameraChanger[0]<cameraUp[cameraMode][0]){cameraUpCameraChanger[0]=cameraUpCameraChanger[0]+cameraUpRatio[0];}
+
+				if (cameraUpCameraChanger[1]>cameraUp[cameraMode][1]){cameraUpCameraChanger[1]=cameraUpCameraChanger[1]-cameraUpRatio[1];}
+				if (cameraUpCameraChanger[1]<cameraUp[cameraMode][1]){cameraUpCameraChanger[1]=cameraUpCameraChanger[1]+cameraUpRatio[1];}
+				
+				if (cameraUpCameraChanger[2]>cameraUp[cameraMode][2]){cameraUpCameraChanger[2]=cameraUpCameraChanger[2]-cameraUpRatio[2];}
+				if (cameraUpCameraChanger[2]<cameraUp[cameraMode][2]){cameraUpCameraChanger[2]=cameraUpCameraChanger[2]+cameraUpRatio[2];}
+	}
+
 void setupCamera(void)
 {
+	// reajusts ambient light after line done 		
+	if (ambient<1.0f)
+			{	ambient+=0.01f;
+				ambientComponent[0]=ambient;
+				ambientComponent[1]=ambient;
+				ambientComponent[2]=ambient;
+			}
+					
+
+	//cameraView[4][0]=PLAYER[0][0];
+
 
 	//Define the view direction based on the camera's position
 	cameraView[0].x = cameraPos[0].x + cos(angle);
@@ -1485,9 +1664,72 @@ void setupCamera(void)
 		
 
 	//Creates the view matrix based on the position, the view direction and the up vector
-	cameraMatrix = glm::lookAt(cameraPos[cameraMode],
+	
+	//tests if a change to the camera is being made. If so, draws what is on the aux camera. 
+	if (cameraChange !=0 )
+		{
+			//tests if there is a significative distance of the camera that is animating the change and the destiny camera coordinates (for now only Postition)
+				
+
+			if (cameraMode==0){
+
+				
+				if (((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>=cameraUpRatio[0]) && ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>=cameraUpRatio[1]) &&((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>=cameraUpRatio[2]))
+				{ChangeUp();}
+				else {
+						if (((abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0]))>=cameraViewRatio[0]) && ((abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))>=cameraViewRatio[1]) &&((abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))>=cameraViewRatio[2]))
+						{ChangeView();}
+						
+					else
+						{	if ( ((abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))>=cameraPosRatio[0]) && ((abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))>=cameraPosRatio[2]) && ((abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))>=cameraPosRatio[1]))
+								{
+									ChangePos();}
+				
+							else { 
+									if (cameraChange==1)
+										move=0;
+						
+									if (cameraChange==2)
+										move=1;
+									cameraChange=0;
+									cameraPosCameraChanger=cameraPos[cameraMode];
+					}
+				}}}
+			else{
+				if ( ((abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))>=cameraPosRatio[0]) && ((abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))>=cameraPosRatio[2]) && ((abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))>=cameraPosRatio[1]) 
+					&& abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0])>=cameraViewRatio[0] && ((abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))>=cameraViewRatio[1]) &&((abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))>=cameraViewRatio[2]) && ((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>=cameraUpRatio[0]) && ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>=cameraUpRatio[1]) && ((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>=cameraUpRatio[2]) )
+								{
+									ChangePos();
+									ChangeView();
+									ChangeUp();
+								}
+							else { 
+									if (cameraChange==1)
+										move=0;
+						
+									if (cameraChange==2)
+										move=1;
+									cameraChange=0;
+									cameraPosCameraChanger=cameraPos[cameraMode];
+					}
+				}		
+	}
+	//printf("camerachange %d.",cameraChange);
+//	cameraView[4][0]=PLAYER[0][0];
+//	cameraView[4][1]=PLAYER[0][1]+30.0f;
+	
+
+	//if (cameraChange==0){
+	if (cameraChange==0){
+		cameraMatrix = glm::lookAt(cameraPos[cameraMode],
 								cameraView[cameraMode],
-								cameraUp[cameraMode]);
+								cameraUp[cameraMode]);}
+		
+	else {
+		cameraMatrix = glm::lookAt(cameraPosCameraChanger,
+								cameraViewCameraChanger,
+								cameraUpCameraChanger);}
+
 }
 
 /* 

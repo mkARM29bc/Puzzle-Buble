@@ -58,6 +58,7 @@ GLfloat diffuseColor2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir
 	loc = glGetUniformLocation(programId, "lightIntensity");
 	glUniform4fv(loc, 1, lightIntensity);
 
+
 	loc = glGetUniformLocation(programId, "ambientIntensity");
 	glUniform4fv(loc, 1, ambientComponent2);
 
