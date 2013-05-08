@@ -99,7 +99,8 @@ glm::vec3 cameraUpCameraChanger=glm::vec3(0.0f, 1.0f, -1.0f);
 float angle = -1.57079633f;
 float angle2 = 0.0f;
 
-
+//translation, rotation,scale
+float ship[10]={11.0f,10.0f,-200.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
 const float velocity = 0.25f;
 
@@ -262,6 +263,16 @@ void dumpInfo(void)
 	5. Check for errors
 	
 */
+void shipControl(void){
+	
+	if (increment)
+	{ship[1]-=0.05f;
+	ship[0]+=0.05f;}
+	else
+	{ship[1]+=0.05f;
+	ship[0]-=0.05f;}
+
+}
 
 void createAndCompileProgram(GLuint vertexId, GLuint fragId, GLuint *programId)
 {
@@ -1363,6 +1374,10 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 	display_at(3, 0.0f, -0.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,2.0f,2.0f);
 
+	//ship
+	shipControl();
+	display_at(0, ship[0], ship[1],ship[2],ship[3],ship[4],ship[5],ship[6],ship[7],ship[8],ship[9]);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0); //4.
@@ -1409,13 +1424,19 @@ void keyboard(unsigned char key, int x, int y)
 	
 		case 'c':
 			
-			if (cameraMode != 1){
+			if (cameraMode != 1 ){
 			//move=1;
 			cameraChange=0;
 			cameraMode +=1;
 			}
 
 			else{
+				if (cameraMode != 3 ){
+			//move=1;
+			cameraChange=0;
+			cameraMode +=1;
+			}
+				else{
 			cameraPosCameraChanger[0]=cameraPos[cameraMode][0];
 			cameraPosCameraChanger[1]=cameraPos[cameraMode][1];
 			cameraPosCameraChanger[2]=cameraPos[cameraMode][2];
@@ -1440,7 +1461,7 @@ void keyboard(unsigned char key, int x, int y)
 			cameraMode +=1;
 
 			
-			if(cameraMode == 3) {
+			if(cameraMode == 4) {
 				cameraMode = 0;
 			}
 			cameraPosRatio[0]=(abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))/200;
@@ -1456,8 +1477,8 @@ void keyboard(unsigned char key, int x, int y)
 			cameraUpRatio[2]=(abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))/1000;
 			
 			//dynamic camera change only happens from 3rd to 1st person
-			}
-				if(cameraMode == 3) {
+				}}
+				if(cameraMode == 4) {
 				cameraMode = 0;
 			}
 			break;
@@ -1648,8 +1669,15 @@ void setupCamera(void)
 				ambientComponent[2]=ambient;
 			}
 					
+	cameraPos[3][0]=ship[0]+10.0f;
+	cameraPos[3][1]=ship[1]+10.0f;
+	cameraPos[3][2]=ship[2]+10.0f;
 
-	//cameraView[4][0]=PLAYER[0][0];
+
+	cameraView[3][0]=PLAYER[0][0];
+	cameraView[3][1]=PLAYER[0][1];
+	cameraView[3][2]=0.0f;
+	
 
 
 	//Define the view direction based on the camera's position
