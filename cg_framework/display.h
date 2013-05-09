@@ -10,6 +10,7 @@ extern GLfloat lightIntensity[];
 extern GLfloat ambientComponent[];
 extern GLfloat diffuseColor[];
 extern bool exploding;
+extern double actualfragment;
 
 
 //GLuint vertexShaderId;

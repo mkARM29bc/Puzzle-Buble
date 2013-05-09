@@ -13,13 +13,20 @@
 
 #define SPACEBAR 32
 
+#define PI 3.14159265
 
-
+bool debug=true;
 const int NUMBER_OBJECTS = 8;
 const int lines = 8;
 const int rows = 8;
 
 //Rui
+double anglestart=0.0;
+double anglefinish=360.0;
+double sizespiral=0.0;
+const double sizespiralmax=1000.0;
+double actualfragment;
+
 int visitedBalls[lines][rows];
 float toDestroyBalls[lines][rows];
 bool visiting=false;
@@ -54,7 +61,7 @@ float dispx=-35.0f;
 
 
 
-	OBJLoader object[objloader] = {("../models/cube.obj"),("../models/cube.obj"),("../models/esfera1.obj"),("../models/cone2.obj")};
+	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj"),("../models/cube.obj"),("../models/triangle.obj")};
 
 
 GLuint vertexShaderId;
@@ -86,8 +93,8 @@ float cameraUpRatio[3];
 
 
 
-glm::vec3 cameraPos[4]={glm::vec3(10.0f, 120.0f, -120.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, 10.0f),glm::vec3(0.0f, 35.0f, 150.0f)};
-glm::vec3 cameraView[4]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f, 0.0f, -10.0f),glm::vec3(0.0f, 0.0f, -1.0f)};
+glm::vec3 cameraPos[4]={glm::vec3(0.0f, 50.0f, 50.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, 10.0f),glm::vec3(0.0f, 35.0f, 150.0f)};
+glm::vec3 cameraView[4]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.0f, 0.0f, -10.0f),glm::vec3(0.0f, 0.0f, -1.0f)};
 glm::vec3 cameraUp[4]={glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, -1.0f)};
 
 
@@ -263,6 +270,86 @@ void dumpInfo(void)
 	5. Check for errors
 	
 */
+
+double particles[1000][3];
+
+
+double degreesToRadian(double anglei){
+ return anglei*PI/180;
+}
+
+double involuteX(double radius, double angle){
+	return radius*(cos(angle)+angle*sin(angle));
+}
+
+double involuteY(double radius, double angle){
+	return radius*(sin(angle)-angle*sin(angle));
+}
+
+double ArchimedeanX(double angle){
+	return (1+angle)*(cos(angle));
+}
+
+double ArchimedeanY(double angle){
+	return (1+angle)*(sin(angle));
+}
+
+void createInvolute(){
+	double radius=60.0;
+	double anglehere=0.1;
+	double ztemp=0;
+	for (int i=0;i<120;i++)
+	{
+		anglehere = 0.2 * i;
+		particles[i][0]=anglehere;
+		particles[i][1]=rand() % 360;
+		//particles[i][1]=ArchimedeanY(anglehere);
+		if (rand()%2==0)
+		{
+			if(ztemp<100)
+				ztemp+=0.1;
+		}
+		else
+		{
+			if(ztemp>-100)
+				ztemp-=0.1;
+		}
+		particles[i][2]=ztemp;
+		anglehere+=2.0;
+		
+	}
+		
+}
+
+void drawParticles(){
+	actualfragment=0;
+	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f);
+	for (int i=0;i<120;i++)
+	{
+		particles[i][0]=particles[i][0]+0.001;
+		/*	if (rand()%2==0)
+		{
+			if(particles[i][2]<100)
+				particles[i][2]+=0.01;
+		}
+		else
+		{
+			if(particles[i][2]>-100)
+				particles[i][2]-=0.01;
+		}*/
+		actualfragment=particles[i][0];
+		display_at(5,ArchimedeanY(particles[i][0]), particles[i][2],  ArchimedeanX(particles[i][0])-100,particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		
+			if(particles[i][0]>120*0.2)
+				particles[i][0]=0.01*1;
+		
+	}
+	
+}
+	
+
+
+
 void shipControl(void){
 	
 	if (increment)
@@ -474,7 +561,7 @@ GLuint loadTexture(char* textureFile)
 	}
 void init(void) 
 {
-	
+	createInvolute();
 
 	/*
 	GLEW initialization.
@@ -514,6 +601,8 @@ void init(void)
 	baseTextureId[1]=loadTexture("../models/textures/sky.dds");
 	baseTextureId[2]=loadTexture("../models/textures/sky.dds");
 	baseTextureId[3]=loadTexture("");
+	baseTextureId[4]=loadTexture("../models/textures/sky.dds");
+	baseTextureId[5]=loadTexture("../models/textures/sky.dds");
 	//Rui edit
 	glClearColor(0.8f, 0.8f, 1.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
 	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
@@ -523,7 +612,7 @@ void init(void)
 	// Rui
 
 	
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
 
 	
 //	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -627,7 +716,7 @@ void setBallColor(void){
 
 			if ((l+ltemp)>=0 && (l+ltemp)<=7 && (c+ctemp)>=0 && (c+ctemp)<=7){
 				//printf(" teste linha:%d coluna:%d\n GAMEPLAY[0][linha][coluna][0] :%d\nGAMEPLAY[0][linha][coluna][1]:%d\ncolorActive%d\n",linha,coluna,GAMEPLAY[0][linha][coluna][0],GAMEPLAY[0][linha][coluna][1],colorActive);
-						if ((ltemp != ctemp || ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
+						if ((ltemp != ctemp && ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
 						{
 							checkSurroundingBalls(l+ltemp, c+ctemp);
 						}
@@ -1336,8 +1425,12 @@ GLfloat POSITION[1][2][8][2] = {{{
 	color=colorActive;
 	setBallColor();
 	//END RUI 
-	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
+	drawParticles();
 	
+
+
+	
+	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	for(int i=0;i<players;i++){
 		for(int j=0;j<8;j++){
 			for(int k=0;k<8;k++){
@@ -1376,7 +1469,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 	//ship
 	shipControl();
-	display_at(0, ship[0], ship[1],ship[2],ship[3],ship[4],ship[5],ship[6],ship[7],ship[8],ship[9]);
+	display_at(4, ship[0], ship[1],ship[2],ship[3],ship[4],ship[5],ship[6],0.3f,0.3f,0.3f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -1723,12 +1816,13 @@ void setupCamera(void)
 			else{*/
 				
 				
-				if ( ((abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))>=cameraPosRatio[0]) && ((abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))>=cameraPosRatio[2]) && ((abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))>=cameraPosRatio[1]) 
-					&& abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0])>=cameraViewRatio[0] && ((abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))>=cameraViewRatio[1]) &&((abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))>=cameraViewRatio[2]) && ((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>=cameraUpRatio[0]) && ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>=cameraUpRatio[1]) && ((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>=cameraUpRatio[2]) )
+				if ( ((abs(cameraPosCameraChanger[0]-cameraPos[cameraMode][0]))>cameraPosRatio[0]) || ((abs(cameraPosCameraChanger[2]-cameraPos[cameraMode][2]))>cameraPosRatio[2]) || ((abs(cameraPosCameraChanger[1]-cameraPos[cameraMode][1]))>cameraPosRatio[1]) 
+					|| abs(cameraViewCameraChanger[0]-cameraView[cameraMode][0])>cameraViewRatio[0] || ((abs(cameraViewCameraChanger[1]-cameraView[cameraMode][1]))>cameraViewRatio[1]) ||((abs(cameraViewCameraChanger[2]-cameraView[cameraMode][2]))>cameraViewRatio[2]) || ((abs(cameraUpCameraChanger[0]-cameraUp[cameraMode][0]))>cameraUpRatio[0]) || ((abs(cameraUpCameraChanger[1]-cameraUp[cameraMode][1]))>cameraUpRatio[1]) || ((abs(cameraUpCameraChanger[2]-cameraUp[cameraMode][2]))>cameraUpRatio[2]) )
 								{
 									ChangePos();
-									ChangeView();
+									
 									ChangeUp();
+									ChangeView();
 								}
 							else { 
 									if (cameraChange==1)
