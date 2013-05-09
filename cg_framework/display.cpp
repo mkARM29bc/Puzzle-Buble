@@ -128,9 +128,10 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(lightDir[0], lightDir[1], lightDir[2], 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
-	GLfloat ambient= (float)actualfragment;
-GLfloat ambientComponent2[] = {2.0f, 2.0f, 2.0f, 1.0f};
-GLfloat diffuseColor2[] = {1.0f-(float)actualfragment/70, 1.0f-(float)actualfragment/70, 1.0f-(float)actualfragment/70};
+	GLfloat ambient= 2.0-(float)actualfragment/15;
+
+	GLfloat ambientComponent2[] = {ambient, ambient, ambient, ambient};
+	GLfloat diffuseColor2[] = {ambient, ambient, ambient};
 	
 	
 	loc = glGetUniformLocation(programId, "lightIntensity");
