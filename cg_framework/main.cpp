@@ -612,7 +612,7 @@ void init(void)
 	// Rui
 
 	
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 
 	
 //	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -716,7 +716,7 @@ void setBallColor(void){
 
 			if ((l+ltemp)>=0 && (l+ltemp)<=7 && (c+ctemp)>=0 && (c+ctemp)<=7){
 				//printf(" teste linha:%d coluna:%d\n GAMEPLAY[0][linha][coluna][0] :%d\nGAMEPLAY[0][linha][coluna][1]:%d\ncolorActive%d\n",linha,coluna,GAMEPLAY[0][linha][coluna][0],GAMEPLAY[0][linha][coluna][1],colorActive);
-						if ((ltemp != ctemp && ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
+						if ((ltemp != ctemp || ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
 						{
 							checkSurroundingBalls(l+ltemp, c+ctemp);
 						}
