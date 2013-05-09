@@ -342,12 +342,13 @@ void drawParticles(){
 		actualfragment=particles[i][0];
 		actualy=ArchimedeanY(particles[i][0]);
 		actualx=ArchimedeanX(particles[i][0])-100;
-		extrafragz=0,12-(i*0.01);
 		display_at(5,actualy, particles[i][2],  actualx,particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 
+		if(i<50){
+		extrafragz=0,12-(i*0.01);
 		display_at(5,actualy, particles[i][2]-(extrafragz), actualx,particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 		display_at(5,actualy, particles[i][2]+(extrafragz), actualx,-particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-
+		}
 			if(particles[i][0]>120*0.2)
 				particles[i][0]=0.01*1;
 		
