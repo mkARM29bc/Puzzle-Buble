@@ -15,6 +15,9 @@
 
 #define PI 3.14159265
 
+int explodestage=0; //0 -> not exploding, 1 -> imploding, 2-> exploding
+bool galaxyON=true;
+
 bool debug=true;
 const int NUMBER_OBJECTS = 8;
 const int lines = 8;
@@ -116,7 +119,7 @@ int move = 0;
 int frame=0,time,timebase=0;
 int speed = 10;
 int restart = 1;
-int levels = 0;
+int levels = 1;
 int players = 1;
 
 
@@ -1434,6 +1437,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	color=colorActive;
 	setBallColor();
 	//END RUI 
+	if (galaxyON)
 	drawParticles();
 	
 
@@ -1653,6 +1657,10 @@ void keyboard(unsigned char key, int x, int y)
 			color=3;
 			break;
 			/*END Rui test colors*/
+			//particle system ON/OFF
+			case 'p':
+			galaxyON=!galaxyON;
+			break;
    }
 }
 
