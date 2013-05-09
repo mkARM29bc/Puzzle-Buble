@@ -842,10 +842,12 @@ void destroy(){
 
 
 
-void found_empty(){
+void found_empty(int i,int j){
 
-	int i=0,j=0, foundX=0,foundY=0;
+	int foundX=1,foundY=1;
 
+	//int i=0,j=0, 
+	/*
 			while (true){
 
 				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
@@ -897,8 +899,10 @@ void found_empty(){
 
 
 			}
-			
-			if (GAMEPLAY[0][i][j][0] == 2 && foundX == 1 && foundY == 1){
+		
+			*/
+
+			if (foundX == 1 && foundY == 1){
 				
 				GAMEPLAY[0][i][j][0] = 1;
 				printf("\n colisao2  i = %d and j = %d \n",i,j);
@@ -1229,8 +1233,47 @@ void display(void){
 			}
 
 
-			int i=0,j=0, foundX=0,foundY=0;
+			//int i=0,j=0, foundX=0,foundY=0;
 
+			int i=lines-1,j=rows-1,found = 0,foundX=0,foundY = 0;
+
+			while(true){
+
+				if(i==-1 || j==-1){
+					break;
+				}
+
+				if(foundX == 1 && foundY == 1 && i>=0 && j>=0){ 
+					if(GAMEPLAY[0][i][j][0] == 2){
+						found = 1;
+						break;
+					}
+					else{
+						break;
+					}
+				}
+
+				if(foundX==0 && i>=0){
+					if(PLAYER[0][1] <= (70.0-i*7.0)+5.25   && PLAYER[0][1] >= (70.0-i*7.0)-5.25){
+						//printf("POSITION_Y1= %f POSITION_Y2= %f\n",(70.0-i*7.0)-7.0,(70.0-i*7.0)+7.0);
+						foundX=1;
+					}
+					else{
+						i = i -1;
+					}
+				}
+
+				if(foundY==0 && j>=0){
+					if(PLAYER[0][0] <= (-28.0+j*8.0)+6.0 && PLAYER[0][0] >= (-28.0+j*8.0)-6.0){
+						
+						//printf("POSITION_X1= %f POSITION_X2= %f\n",(-28.0+j*8.0)-8.0,(-28.0+j*8.0)+8.0);
+						foundY=1;
+					}
+					else{
+						j=j-1;
+					}
+				}
+			}
 			/*
 			
 GLfloat POSITION[1][2][8][2] = {{{
@@ -1239,7 +1282,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	{0.0f,0.0f},{-24.0f,63.0f},{-16.0f,63.0f},{-8.0f,63.0f},{0.0f,63.0f},{8.0f,63.0f},{16.0f,63.0f},{24.0f,63.0f}
 }}};
 			*/
-
+			/*
 			while (true){
 
 
@@ -1276,13 +1319,15 @@ GLfloat POSITION[1][2][8][2] = {{{
 				}
 				
 			}
+			*/
 			
-			if ((GAMEPLAY[0][i][j][0] == 1 && foundX == 1 && foundY == 1) || (i==0 && foundY == 1 && GAMEPLAY[0][i][j][0] == 2)){
-				found_empty();
-				//move=0;
-				printf("\n colisao1  i = %d and j = %d \n",i,j);
-				printf("Encontrou colisao");
-			}
+			//if ((GAMEPLAY[0][i][j][0] == 1 && foundX == 1 && foundY == 1) || (i==0 && foundY == 1 && GAMEPLAY[0][i][j][0] == 2)){
+				if(found==1){
+					found_empty(i,j);
+					//move=0;
+					printf("\n colisao1  i = %d and j = %d \n",i,j);
+					printf("Encontrou colisao");
+				}
 
 
 		}
