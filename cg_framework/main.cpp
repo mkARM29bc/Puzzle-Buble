@@ -17,6 +17,10 @@
 
 int explodestage=0; //0 -> not exploding, 1 -> imploding, 2-> exploding
 bool galaxyON=true;
+bool particleShift=false;
+bool populateParticlesShiftDistance=false;
+const int transitionChangeTime=100;
+int transitionTime=0;
 
 bool debug=true;
 const int NUMBER_OBJECTS = 8;
@@ -29,6 +33,7 @@ double anglefinish=360.0;
 double sizespiral=0.0;
 const double sizespiralmax=1000.0;
 double actualfragment;
+int particlesState=1;
 
 int visitedBalls[lines][rows];
 float toDestroyBalls[lines][rows];
@@ -273,8 +278,8 @@ void dumpInfo(void)
 	5. Check for errors
 	
 */
-
-double particles[1000][3];
+//[number of particles][0-x,1-y,2-z,3-actualx,4-actualy]
+double particles[1000][7];
 
 
 double degreesToRadian(double anglei){
@@ -297,7 +302,177 @@ double ArchimedeanY(double angle){
 	return (1+angle)*(sin(angle));
 }
 
-void createInvolute(){
+double CircleX(double angle){
+	return 10*cos(angle);
+}
+
+double CircleY(double angle){
+	return 10*sin(angle);
+}
+
+
+void drawSpiral(){
+	float actualy,actualx;
+	float extrafragz;
+	for (int i=0;i<120;i++)
+	{
+		particles[i][0]=particles[i][0]+0.001;
+		/*	if (rand()%2==0)
+		{
+			if(particles[i][2]<100)
+				particles[i][2]+=0.01;
+		}
+		else
+		{
+			if(particles[i][2]>-100)
+				particles[i][2]-=0.01;
+		}*/
+		actualfragment=particles[i][0];
+		particles[i][4]=ArchimedeanY(particles[i][0]);
+		particles[i][3]=ArchimedeanX(particles[i][0])-100;
+		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+
+		if(i<50){
+		extrafragz=0,72-(i*0.06);
+		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		}
+			if(particles[i][0]>120*0.2)
+				particles[i][0]=0.01*1;
+		
+		}
+	}
+
+void drawCircle(){
+	float actualy,actualx;
+	float extrafragz;
+	for (int i=0;i<120;i++)
+	{
+		particles[i][0]=particles[i][0]+0.001;
+		/*	if (rand()%2==0)
+		{
+			if(particles[i][2]<100)
+				particles[i][2]+=0.01;
+		}
+		else
+		{
+			if(particles[i][2]>-100)
+				particles[i][2]-=0.01;
+		}*/
+		actualfragment=particles[i][0];
+		particles[i][4]=CircleY(particles[i][0]);
+		particles[i][3]=CircleX(particles[i][0])-100;
+		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+
+		if(i<50){
+		extrafragz=0,36-(i*0.03);
+		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		}
+			if(particles[i][0]>120*0.2)
+				particles[i][0]=0.01*1;
+		
+		}
+	}
+
+void populateTransitionDisplacement(){
+
+	if (particlesState==0)
+		{
+			for (int i=0;i<120;i++)
+				{
+					 actualfragment=particles[i][0];
+					particles[i][5]= (CircleX(particles[i][0])-100-particles[i][3])/transitionChangeTime;
+					particles[i][6]= (CircleY(particles[i][0])-particles[i][4])/transitionChangeTime;
+				
+					display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					
+			}
+		
+		}
+	else
+		{
+			for (int i=0;i<120;i++)
+				{
+
+					actualfragment=particles[i][0];
+					// -1     3   
+					particles[i][5]= (CircleX(particles[i][0])-100-particles[i][3])/transitionChangeTime;
+					particles[i][6]= (CircleY(particles[i][0])-particles[i][4])/transitionChangeTime;
+					
+					display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+				}
+		
+		}
+	populateParticlesShiftDistance=false;
+	transitionTime=0;
+}
+
+void changeParticles(){
+	bool complete=true;
+	double extrafragz;
+	if (populateParticlesShiftDistance)
+	{
+		populateTransitionDisplacement();
+	}
+
+	else
+	{
+		if(transitionTime<transitionChangeTime)
+		{
+		
+			for (int i=0;i<120;i++)
+			{
+				actualfragment=particles[i][0];
+				//particles[i][3]+=particles[i][5];
+				//particles[i][4]+=particles[i][6];
+				if (particlesState==0)
+					{
+					if (transitionTime==0){
+						particles[i][5]=abs(abs(particles[i][3])-abs(ArchimedeanX(particles[i][0])-100))/transitionChangeTime;
+						particles[i][6]=abs(abs(particles[i][4])-abs(ArchimedeanY(particles[i][0])))/transitionChangeTime;
+							}
+					if (particles[i][3]>ArchimedeanX(particles[i][0])-100){particles[i][3]-=particles[i][5];complete=false;}
+					if (particles[i][3]<ArchimedeanX(particles[i][0])-100){particles[i][3]+=particles[i][5];complete=false;}
+					if (particles[i][4]>ArchimedeanY(particles[i][0])){particles[i][4]-=particles[i][6];complete=false;}
+					if (particles[i][4]<ArchimedeanY(particles[i][0])){particles[i][4]+=particles[i][6];complete=false;}
+						display_at(5,particles[i][4], particles[i][2],particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					}
+				else 
+					{
+							if (transitionTime==0){
+						particles[i][5]=abs(abs(particles[i][3])-abs(CircleX(particles[i][0])-100))/transitionChangeTime;
+						particles[i][6]=abs(abs(particles[i][4])-abs(CircleY(particles[i][0])))/transitionChangeTime;
+							}
+					if (particles[i][3]>CircleX(particles[i][0])-100){particles[i][3]-=particles[i][5];complete=false;}
+					if (particles[i][3]<CircleX(particles[i][0])-100){particles[i][3]+=particles[i][5];complete=false;}
+					if (particles[i][4]>CircleY(particles[i][0])){particles[i][4]-=particles[i][6];complete=false;}
+					if (particles[i][4]<CircleY(particles[i][0])){particles[i][4]+=particles[i][6];complete=false;}
+						display_at(5,particles[i][4], particles[i][2],particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					}
+				if(i<50){
+					extrafragz=0,72-(i*0.06);
+					display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					}
+				}
+				//display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+			transitionTime++;
+			if (complete) transitionTime=transitionChangeTime;
+			}
+			
+		
+		
+		else
+		{
+			printf("teste");
+			particleShift=false;
+		}
+}
+}
+
+void createParticles(){
+
 	double radius=60.0;
 	double anglehere=0.1;
 	double ztemp=0;
@@ -306,6 +481,10 @@ void createInvolute(){
 		anglehere = 0.2 * i;
 		particles[i][0]=anglehere;
 		particles[i][1]=rand() % 360;
+		particles[i][2]=0;
+		particles[i][3]=0;
+		particles[i][5]=0;
+		particles[i][6]=0;
 		//particles[i][1]=ArchimedeanY(anglehere);
 		if (rand()%2==0)
 		{
@@ -321,7 +500,7 @@ void createInvolute(){
 		anglehere+=2.0;
 		
 	}
-		
+	//changeParticles();	
 }
 
 void drawParticles(){
@@ -329,34 +508,17 @@ void drawParticles(){
 	float extrafragz;
 	actualfragment=0;
 	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f);
-	for (int i=0;i<120;i++)
-	{
-		particles[i][0]=particles[i][0]+0.001;
-		/*	if (rand()%2==0)
-		{
-			if(particles[i][2]<100)
-				particles[i][2]+=0.01;
-		}
-		else
-		{
-			if(particles[i][2]>-100)
-				particles[i][2]-=0.01;
-		}*/
-		actualfragment=particles[i][0];
-		actualy=ArchimedeanY(particles[i][0]);
-		actualx=ArchimedeanX(particles[i][0])-100;
-		display_at(5,actualy, particles[i][2],  actualx,particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-
-		if(i<50){
-		extrafragz=0,12-(i*0.01);
-		display_at(5,actualy, particles[i][2]-(extrafragz), actualx,particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-		display_at(5,actualy, particles[i][2]+(extrafragz), actualx,-particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-		}
-			if(particles[i][0]>120*0.2)
-				particles[i][0]=0.01*1;
-		
-	}
 	
+	if(!particleShift)
+	{
+		
+		if (particlesState==0)
+			drawSpiral();
+		else
+			drawCircle();
+	}
+	else
+		changeParticles();
 }
 	
 
@@ -573,7 +735,7 @@ GLuint loadTexture(char* textureFile)
 	}
 void init(void) 
 {
-	createInvolute();
+	createParticles();
 
 	/*
 	GLEW initialization.
@@ -629,6 +791,7 @@ void init(void)
 	
 //	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	//glEnable (GL_BLEND); glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+
 
 	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
@@ -846,61 +1009,7 @@ void found_empty(int i,int j){
 
 	int foundX=1,foundY=1;
 
-	//int i=0,j=0, 
-	/*
-			while (true){
-
-				if ((foundX == 1 && foundY == 1) || (i==8 && j == 8)){
-					break;
-				}
-				if(foundY==0){
-					if(j%2==0){
-						if ((PLAYER[0][0] <= (-28.0+j*8.0)+6.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0) || (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0)){ //8
-							foundY = 1;
-						}
-						else{
-							j =	j+1;
-						}
-					}
-					else{
-						if ((PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0) || (PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0)){ //8
-							foundY = 1;
-						}
-						else{
-							j = j+1;
-						}
-					}
-				}
-
-				if(foundX == 0){
-					if (i%2==0){
-						if ((PLAYER[0][1] <= (70.0-i*7.0)+4.0   && PLAYER[0][1] >= (70.0-i*7.0)-4.0 ) || (PLAYER[0][1] <= (70.0-i*7.0)+4.0   && PLAYER[0][1] >= (70.0-i*7.0)-4.0 )){ //7
-							foundX = 1;
-						}
-						else{
-							i = i+1;
-						}
-					}
-
-					else{
-						if ((PLAYER[0][1] <= (70.0-i*7.0)+4.0   && PLAYER[0][1] >= (70.0-i*7.0)-4.0 ) || (PLAYER[0][1] <= (70.0-i*7.0)+4.0   && PLAYER[0][1] >= (70.0-i*7.0)-4.0 )){ //7
-							foundX = 1;
-						}
-						else{
-							i = i+1;
-						}
-					}
-				}
-
-				
-
-
-
-
-
-			}
-		
-			*/
+	
 
 			if (foundX == 1 && foundY == 1){
 				
@@ -1482,12 +1591,12 @@ GLfloat POSITION[1][2][8][2] = {{{
 	color=colorActive;
 	setBallColor();
 	//END RUI 
+	
+	
+	
 	if (galaxyON)
 	drawParticles();
-	
-
-
-	
+		
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	for(int i=0;i<players;i++){
 		for(int j=0;j<8;j++){
@@ -1572,7 +1681,16 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit(0);
 			break;
-	
+		case 'o':
+			if (particlesState==0)
+			{particlesState=1;}
+			else
+				particlesState=0;
+			printf("%d.",particlesState);
+			particleShift=true;
+			transitionTime=0;
+			//populateParticlesShiftDistance=true;
+			break;
 		case 'c':
 			
 			if (cameraMode == 0 ){
