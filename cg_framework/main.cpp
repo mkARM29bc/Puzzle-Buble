@@ -333,10 +333,10 @@ void drawSpiral(){
 		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 
 		if(i<50){
-		extrafragz=0,72-(i*0.06);
+		extrafragz=0,36-(i*0.03);
 		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-		}
+		} 
 			if(particles[i][0]>120*0.2)
 				particles[i][0]=0.01*1;
 		
@@ -362,13 +362,13 @@ void drawCircle(){
 		actualfragment=particles[i][0];
 		particles[i][4]=CircleY(particles[i][0]);
 		particles[i][3]=CircleX(particles[i][0])-100;
-		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 
 		if(i<50){
 		extrafragz=0,36-(i*0.03);
-		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-		}
+		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		} 
 			if(particles[i][0]>120*0.2)
 				particles[i][0]=0.01*1;
 		
@@ -436,8 +436,9 @@ void changeParticles(){
 					if (particles[i][3]<ArchimedeanX(particles[i][0])-100){particles[i][3]+=particles[i][5];complete=false;}
 					if (particles[i][4]>ArchimedeanY(particles[i][0])){particles[i][4]-=particles[i][6];complete=false;}
 					if (particles[i][4]<ArchimedeanY(particles[i][0])){particles[i][4]+=particles[i][6];complete=false;}
-						display_at(5,particles[i][4], particles[i][2],particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-					}
+						display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+	
+				}
 				else 
 					{
 							if (transitionTime==0){
@@ -448,17 +449,19 @@ void changeParticles(){
 					if (particles[i][3]<CircleX(particles[i][0])-100){particles[i][3]+=particles[i][5];complete=false;}
 					if (particles[i][4]>CircleY(particles[i][0])){particles[i][4]-=particles[i][6];complete=false;}
 					if (particles[i][4]<CircleY(particles[i][0])){particles[i][4]+=particles[i][6];complete=false;}
-						display_at(5,particles[i][4], particles[i][2],particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-					}
-				if(i<50){
-					extrafragz=0,72-(i*0.06);
-					display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-					display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-					}
+						display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+	}
+					if(i<50){
+					extrafragz=0,36-(i*0.03);
+					
+		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+	} 
 				}
 				//display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 			transitionTime++;
 			if (complete) transitionTime=transitionChangeTime;
+			if (transitionTime+1>=transitionChangeTime) particleShift=false;
 			}
 			
 		
@@ -467,6 +470,7 @@ void changeParticles(){
 		{
 			printf("teste");
 			particleShift=false;
+			
 		}
 }
 }
@@ -515,7 +519,7 @@ void drawParticles(){
 		if (particlesState==0)
 			drawSpiral();
 		else
-			drawCircle();
+			drawCircle(); 
 	}
 	else
 		changeParticles();
