@@ -101,7 +101,7 @@ float cameraUpRatio[3];
 
 
 
-glm::vec3 cameraPos[4]={glm::vec3(0.0f, 50.0f, 50.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, 10.0f),glm::vec3(0.0f, 35.0f, 150.0f)};
+glm::vec3 cameraPos[4]={glm::vec3(10.0f, 120.0f, -120.0f),glm::vec3(0.0f, -35.0f, 0.0f),glm::vec3(0.0f, 0.0f, 10.0f),glm::vec3(0.0f, 35.0f, 150.0f)};
 glm::vec3 cameraView[4]={glm::vec3(0.0f, 0.0f, -1.0f),glm::vec3(1.0f,1.0f,1.0f),glm::vec3(0.0f, 0.0f, -10.0f),glm::vec3(0.0f, 0.0f, -1.0f)};
 glm::vec3 cameraUp[4]={glm::vec3(0.0f, 1.0f, -1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, 1.0f),glm::vec3(0.0f, 1.0f, -1.0f)};
 
@@ -1308,8 +1308,8 @@ void display(void){
 	if (move == 1){
 		
 		// Rui camera
-		angle += MOVE_PLAYER_TRANSLATE[0][0]/10000;		//x
-		angle2+=MOVE_PLAYER_TRANSLATE[0][1] /100000;	//y
+		angle += MOVE_PLAYER_TRANSLATE[0][0]/7000;		//x
+		angle2+=MOVE_PLAYER_TRANSLATE[0][1] /10000;	//y
 
 		
 		//end camera
@@ -2022,7 +2022,15 @@ void setupCamera(void)
 	//printf("camerachange %d.",cameraChange);
 //	cameraView[4][0]=PLAYER[0][0];
 //	cameraView[4][1]=PLAYER[0][1]+30.0f;
-	
+	//Define the view direction based on the camera's position
+	cameraView[0].x = cameraPos[0].x + cos(angle);
+
+	// Rui edit
+	cameraView[0].y = cameraPos[0].y + sin(angle2);
+	//
+
+	cameraView[0].z = cameraPos[0].z + sin(angle);
+
 
 	//if (cameraChange==0){
 	if (cameraChange==0){
