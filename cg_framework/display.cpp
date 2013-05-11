@@ -9,10 +9,12 @@
 #include "main.h"
 void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float ry,float rz,float sx,float sy,float sz){
 	
+	if (actualfragment!=0 || va_pos==5 || actualfragment !=-1){
 	glActiveTexture(GL_TEXTURE0);
 	
-
+	
 	glBindTexture(GL_TEXTURE_2D,  baseTextureId[va_pos]);
+	}
 
 	GLuint loc = glGetUniformLocation(programId, "tex");
 	glUniform1i(loc, 0); 
@@ -87,7 +89,7 @@ GLfloat diffuseColor2[] = {0.8f+lightDir[1]/10, 0.8f+lightDir[1]/10, 0.8f+lightD
 	
 	}
 
-		if ((va_pos==0 && actualfragment!=0) || va_pos==4)
+		if ((va_pos==0 && actualfragment!=0 && actualfragment!=-1) || va_pos==4)
 		{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(lightDir[0], lightDir[1], lightDir[2], 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
@@ -124,18 +126,51 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	}
 
 		// does the calculation of light for both fragments and their center
-		if (va_pos==5 || actualfragment==0)
+		if (va_pos==5 || actualfragment==0 || actualfragment==-1)
 	{
-	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(lightDir[0], lightDir[1], lightDir[2], 0.0f);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	if (actualfragment==-1 )	glEnable(GL_BLEND); 
+	
+	GLfloat alphalight=1.0f;
+
+	glm::vec4  transformedLightDir = cameraMatrix * glm::vec4(lightDir[0], lightDir[1], lightDir[2], alphalight);
+
+		if (actualfragment==-1 ){
+		alphalight=0.6f;
+	transformedLightDir = cameraMatrix * glm::vec4(1.0f,1.0f,1.0f, alphalight);
+	}
+	
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
 	GLfloat ambient= 2.0-(float)actualfragment/15;
-
 	GLfloat ambientComponent2[] = {ambient, ambient, ambient, ambient};
 	GLfloat diffuseColor2[] = {ambient, ambient, ambient};
+	GLfloat lightIntensity2[] = {0.5f, 0.2f, 0.5f, 1.0f};
+	if (actualfragment==0 ){
+		ambientComponent2[0] = 1.0f;
+		ambientComponent2[1] = 1.0f;
+		ambientComponent2[2] = 1.0f;
+		ambientComponent2[3] = 1.0f;
+
+		diffuseColor2[0] = 0.2f;
+		diffuseColor2[1] = 0.2f;
+		diffuseColor2[2] = 0.3f;
+
+	}
+		if (actualfragment==-1 ){
+		ambientComponent2[0] = 1.0f;
+		ambientComponent2[1] = 1.0f;
+		ambientComponent2[2] = 1.0f;
+		ambientComponent2[3] = 0.0f;
+
+		diffuseColor2[0] = 1.0f;
+		diffuseColor2[1] = 1.0f;
+		diffuseColor2[2] = 0.5f;
+
+	}
 	
 	
-	loc = glGetUniformLocation(programId, "lightIntensity");
-	glUniform4fv(loc, 1, lightIntensity);
+	loc = glGetUniformLocation(programId, "lightIntensity2");
+	glUniform4fv(loc, 1, lightIntensity2);
 
 
 	loc = glGetUniformLocation(programId, "ambientIntensity");
@@ -145,13 +180,17 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	glUniform4fv(loc, 1, diffuseColor2);
 		}
 		if (va_pos==5){
+			glDisable(GL_BLEND);
 	const unsigned int *indices = object[va_pos].getIndicesArray();
 	glDrawElements(GL_POINTS, object[va_pos].getNIndices(), GL_UNSIGNED_INT, indices); //type of geometry; number of indices; type of indices array, indices pointer
+		
 		}
 	
 
 		else{
 	const unsigned int *indices = object[va_pos].getIndicesArray();
 	glDrawElements(GL_TRIANGLES, object[va_pos].getNIndices(), GL_UNSIGNED_INT, indices); //type of geometry; number of indices; type of indices array, indices pointer
+		glDisable(GL_BLEND);
 		}
+		
 }

@@ -15,6 +15,8 @@
 
 #define PI 3.14159265
 
+GLfloat blink=1.0f;
+bool incrementblink=true;
 int explodestage=0; //0 -> not exploding, 1 -> imploding, 2-> exploding
 bool galaxyON=true;
 bool particleShift=false;
@@ -33,7 +35,8 @@ double anglefinish=360.0;
 double sizespiral=0.0;
 const double sizespiralmax=1000.0;
 double actualfragment;
-int particlesState=1;
+int particlesState=0;
+
 
 int visitedBalls[lines][rows];
 float toDestroyBalls[lines][rows];
@@ -70,6 +73,7 @@ float dispx=-35.0f;
 
 
 	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj"),("../models/cube.obj"),("../models/triangle.obj")};
+
 
 
 GLuint vertexShaderId;
@@ -278,6 +282,56 @@ void dumpInfo(void)
 	5. Check for errors
 	
 */
+void setBallColor(void){
+
+	if (destructionOngoing){
+	if (color==1){
+	
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = diffusedExplosion;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
+	}
+	if (color==2){
+	diffuseColor[0] = 0.0f;
+	//diffuseColor[1] = 1.0f;
+	diffuseColor[1] = diffusedExplosion;
+	diffuseColor[2] = 0.0f;
+
+	}
+	if (color==3){
+	
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	//diffuseColor[2] = 1.0f;
+	diffuseColor[2] = diffusedExplosion;
+	}
+	}
+	else{
+	if (color==1){
+	
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = diffused;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
+	}
+	if (color==2){
+	diffuseColor[0] = 0.0f;
+	//diffuseColor[1] = 1.0f;
+	diffuseColor[1] = diffused;
+	diffuseColor[2] = 0.0f;
+
+	}
+	if (color==3){
+	
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	//diffuseColor[2] = 1.0f;
+	diffuseColor[2] = diffused;
+	}
+	}
+	}
+
 //[number of particles][0-x,1-y,2-z,3-actualx,4-actualy]
 double particles[1000][7];
 
@@ -507,12 +561,16 @@ void createParticles(){
 	//changeParticles();	
 }
 
+
 void drawParticles(){
 	float actualy,actualx;
 	float extrafragz;
-	actualfragment=0;
+	actualfragment=0;		// primeiro o não transparente
+	color=0;
+	setBallColor();
 	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f);
-	
+	actualfragment=-1;
+	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,blink,blink,blink);
 	if(!particleShift)
 	{
 		
@@ -790,8 +848,7 @@ void init(void)
 	// Rui
 
 	
-	glEnable(GL_BLEND);
-
+	
 	
 //	glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	//glEnable (GL_BLEND); glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
@@ -821,54 +878,7 @@ void init(void)
 */
 
 //float t = 0;
-void setBallColor(void){
-	if (destructionOngoing){
-	if (color==1){
-	
-	//diffuseColor[0] = 1.0f;
-	diffuseColor[0] = diffusedExplosion;
-	diffuseColor[1] = 0.0f;
-	diffuseColor[2] = 0.0f;
-	}
-	if (color==2){
-	diffuseColor[0] = 0.0f;
-	//diffuseColor[1] = 1.0f;
-	diffuseColor[1] = diffusedExplosion;
-	diffuseColor[2] = 0.0f;
 
-	}
-	if (color==3){
-	
-	diffuseColor[0] = 0.0f;
-	diffuseColor[1] = 0.0f;
-	//diffuseColor[2] = 1.0f;
-	diffuseColor[2] = diffusedExplosion;
-	}
-	}
-	else{
-	if (color==1){
-	
-	//diffuseColor[0] = 1.0f;
-	diffuseColor[0] = diffused;
-	diffuseColor[1] = 0.0f;
-	diffuseColor[2] = 0.0f;
-	}
-	if (color==2){
-	diffuseColor[0] = 0.0f;
-	//diffuseColor[1] = 1.0f;
-	diffuseColor[1] = diffused;
-	diffuseColor[2] = 0.0f;
-
-	}
-	if (color==3){
-	
-	diffuseColor[0] = 0.0f;
-	diffuseColor[1] = 0.0f;
-	//diffuseColor[2] = 1.0f;
-	diffuseColor[2] = diffused;
-	}
-	}
-	}
 
 
 
@@ -1261,8 +1271,7 @@ void display(void){
 		init();
 		inited = true;
 	}
-	
-	
+
 	if (cameraPos[0][0]!=0.0f ||cameraPos[0][1]!= 30.0f|| cameraPos[0][2]!= 120.0f)
 				{
 				if (cameraPos[0][0] > 0.0f) cameraPos[0][0]-=0.1f;
@@ -1458,6 +1467,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	
 	if (increment){
 		lightDir[0]=lightDir[0]+0.001f;
+		
 		//diffused+=0.1f;
 		}
 
@@ -1468,6 +1478,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	if (!increment)
 	{		
 		lightDir[0]=lightDir[0]-0.001f;
+		
 	//	diffused-=0.1f;	
 	}
 
@@ -1506,6 +1517,30 @@ GLfloat POSITION[1][2][8][2] = {{{
 	if (diffusedExplosion>=2.0f){incrDiffuseExplo=false;}
 	if (diffusedExplosion<=0.5f){incrDiffuseExplo=true;}
 	
+
+
+	// blink
+
+	if (incrementblink){
+		blink=blink+0.001f;
+		
+		//diffused+=0.1f;
+		}
+
+
+	if (blink>=1.13f)
+	{incrementblink=false;}
+	
+	if (!incrementblink)
+	{		
+		blink=blink-0.0003f;
+		
+	//	diffused-=0.1f;	
+	}
+
+	if (blink<=1.05f)
+	{incrementblink=true;}
+
 
 
 	// RESTART_THE_GAME_SET
@@ -1611,11 +1646,14 @@ GLfloat POSITION[1][2][8][2] = {{{
 					color = GAMEPLAY[0][j][k][1];
 					setBallColor();
 					//
+					actualfragment=1000;
 					display_at(0,POSITION[0][j%2][k][0], POSITION[0][j%2][k][1] -14.0*(j/2), 0.0f, 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+				
 				}
 			}
 		}
 	}
+	actualfragment=1000;
 	exploding=false;
 	proceedDestruction();
 
@@ -1850,9 +1888,9 @@ void keyboardSpecialKeys(int key, int x, int y)
 			//PLAYER[0][0]-=1;
 
 			if (MOVE_PLAYER[0][0] >= -0.9f){
-				MOVE_PLAYER[0][0] -= 0.1;
+				MOVE_PLAYER[0][0] -= 0.01;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-				pointerangle +=6.5f;
+				pointerangle +=0.65f;
 			}
 			break;
 
@@ -1860,9 +1898,9 @@ void keyboardSpecialKeys(int key, int x, int y)
 			//angle += velocity;
 			//PLAYER[0][0]+=1;
 			if (MOVE_PLAYER[0][0] <= 0.9f){
-				MOVE_PLAYER[0][0] += 0.1;
+				MOVE_PLAYER[0][0] += 0.01;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-				pointerangle -=6.5f;
+				pointerangle -=0.65f;
 			}
 			break;
 		case GLUT_KEY_UP:
