@@ -1572,6 +1572,8 @@ GLfloat POSITION[1][2][8][2] = {{{
 	// RESTART_THE_GAME_SET
 	if (restart == 1){
 
+		end_game = 0;
+
 		for (int i=0;i<players;i++){
 			for (int j=0;j<8;j++){
 				for (int k=0;k<8;k++){
