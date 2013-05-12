@@ -168,10 +168,11 @@ GLfloat MOVE_PLAYER_TRANSLATE[1][2] = {0.0f,1.0f};
 GLfloat MOVE_PLAYER[1][2] = {0.0f,1.0f};
 
 // COLORS {Red,Green,Blue,Yellow}
+/*
 GLfloat COLORS[4][3] = {
 	{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,1.0f,0.0f}
 };
-
+*/
 
 // LEVELS [number of level] [lines][rows][0 relate of the ball , 1 relate of the color]
 GLint LEVELS[2][8][8][2] = {
@@ -241,8 +242,9 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
-//GLfloat TOP_BORDER = POSITION[0][0][0][1];
-//GLfloat BALL_BORDER[1] = {};
+int end_line = 7;
+int end_game = 0;
+
 
 /* 
 	Error checking function:
@@ -285,6 +287,13 @@ void dumpInfo(void)
 void setBallColor(void){
 
 	if (destructionOngoing){
+	if (color==0){
+	
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = 1.0f;
+	diffuseColor[1] = 1.0f;
+	diffuseColor[2] = 1.0f;
+	}
 	if (color==1){
 	
 	//diffuseColor[0] = 1.0f;
@@ -1028,6 +1037,8 @@ void found_empty(int i,int j){
 				GAMEPLAY[0][i][j][0] = 1;
 				printf("\n colisao2  i = %d and j = %d \n",i,j);
 
+				
+
 				//colorBalls[i][j]=colorActive;
 				GAMEPLAY[0][i][j][1] = colorActive;
 				
@@ -1041,7 +1052,7 @@ void found_empty(int i,int j){
 
 					destroy();
 				
-					
+				
 					for (int i=0;i<lines;i++)
 						for(int j=0;j<rows;j++){
 							if(GAMEPLAY[0][i][j][0] == 2){
@@ -1259,6 +1270,22 @@ void found_empty(int i,int j){
 						}
 					}
 				printf("\n");
+				}
+				for(int j=0;j<rows;j++){
+						if(GAMEPLAY[0][end_line][j][0] == 1){
+							end_game = 1;
+							break;
+						}
+				}
+
+				if(end_game==1){
+					for(int i=0;i<lines;i++){
+						for(int j=0;j<rows;j++){
+							if(GAMEPLAY[0][i][j][0] == 1){
+								GAMEPLAY[0][i][j][1] = 0;
+							}
+						}
+					}
 				}
 
 			}
@@ -1835,19 +1862,20 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 		case SPACEBAR:
-			if (move == 0){
-				move = 1;
-				MOVE_PLAYER_TRANSLATE[0][0] = MOVE_PLAYER[0][0];
-				MOVE_PLAYER_TRANSLATE[0][1] = MOVE_PLAYER[0][1];
-				PLAYER[0][0] += MOVE_PLAYER_TRANSLATE[0][0];
-				PLAYER[0][1] += MOVE_PLAYER_TRANSLATE[0][0];
+			if(end_game==0){
+				if (move == 0){
+					move = 1;
+					MOVE_PLAYER_TRANSLATE[0][0] = MOVE_PLAYER[0][0];
+					MOVE_PLAYER_TRANSLATE[0][1] = MOVE_PLAYER[0][1];
+					PLAYER[0][0] += MOVE_PLAYER_TRANSLATE[0][0];
+					PLAYER[0][1] += MOVE_PLAYER_TRANSLATE[0][0];
 
-				timebase=glutGet(GLUT_ELAPSED_TIME);
+					timebase=glutGet(GLUT_ELAPSED_TIME);
+				}
+				else{
+					move = 0;
+				}
 			}
-			else{
-				move = 0;
-			}
-			
 			break;
 
 			/*Rui test colors*/
@@ -1885,21 +1913,24 @@ void keyboardSpecialKeys(int key, int x, int y)
 		case GLUT_KEY_LEFT:
 			//angle -= velocity;
 			//PLAYER[0][0]-=1;
-
-			if (MOVE_PLAYER[0][0] >= -0.9f){
-				MOVE_PLAYER[0][0] -= 0.01f;
-				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-				pointerangle +=0.65f;
+			if(end_game == 0){
+				if (MOVE_PLAYER[0][0] >= -0.9f){
+					MOVE_PLAYER[0][0] -= 0.01f;
+					MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
+					pointerangle +=0.65f;
+				}
 			}
 			break;
 
 		case GLUT_KEY_RIGHT:
 			//angle += velocity;
 			//PLAYER[0][0]+=1;
-			if (MOVE_PLAYER[0][0] <= 0.9f){
-				MOVE_PLAYER[0][0] += 0.01f;
-				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-				pointerangle -=0.65f;
+			if(end_game == 0){
+				if (MOVE_PLAYER[0][0] <= 0.9f){
+					MOVE_PLAYER[0][0] += 0.01f;
+					MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
+					pointerangle -=0.65f;
+				}
 			}
 			break;
 		case GLUT_KEY_UP:
