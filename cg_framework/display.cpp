@@ -141,7 +141,7 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	}
 	
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
-	GLfloat ambient= 2.0-(float)actualfragment/15;
+	GLfloat ambient= 2.0f-(GLfloat)actualfragment/15;
 	GLfloat ambientComponent2[] = {ambient, ambient, ambient, ambient};
 	GLfloat diffuseColor2[] = {ambient, ambient, ambient};
 	GLfloat lightIntensity2[] = {0.5f, 0.2f, 0.5f, 1.0f};

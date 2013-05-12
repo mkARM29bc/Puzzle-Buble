@@ -13,7 +13,7 @@
 
 #define SPACEBAR 32
 
-#define PI 3.14159265
+#define PI 3.14159265f
 
 GLfloat blink=1.0f;
 bool incrementblink=true;
@@ -30,11 +30,11 @@ const int lines = 8;
 const int rows = 8;
 
 //Rui
-double anglestart=0.0;
-double anglefinish=360.0;
-double sizespiral=0.0;
-const double sizespiralmax=1000.0;
-double actualfragment;
+GLfloat anglestart=0.0;
+GLfloat anglefinish=360.0;
+GLfloat sizespiral=0.0;
+const GLfloat sizespiralmax=1000.0;
+GLfloat actualfragment;
 int particlesState=0;
 
 
@@ -97,9 +97,9 @@ glm::mat4 cameraMatrix;
 // can have three values. 0 means that no camera change is active. 1 means that a camera change is active and "move" was 0 before camera change, 2 camera change active but move was 1.
 int cameraChange=0;
 
-float cameraPosRatio[3];
-float cameraViewRatio[3];
-float cameraUpRatio[3];
+GLfloat cameraPosRatio[3];
+GLfloat cameraViewRatio[3];
+GLfloat cameraUpRatio[3];
 
 
 
@@ -115,13 +115,13 @@ glm::vec3 cameraPosCameraChanger=glm::vec3(10.0f, 120.0f, -120.0f);
 glm::vec3 cameraViewCameraChanger=glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUpCameraChanger=glm::vec3(0.0f, 1.0f, -1.0f);
 
-float angle = -1.57079633f;
-float angle2 = 0.0f;
+GLfloat angle = -1.57079633f;
+GLfloat angle2 = 0.0f;
 
 //translation, rotation,scale
-float ship[10]={11.0f,10.0f,-200.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
+GLfloat ship[10]={11.0f,10.0f,-200.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
-const float velocity = 0.25f;
+const GLfloat velocity = 0.25f;
 
 int cameraMode = 0;
 int move = 0;
@@ -141,7 +141,7 @@ bool incrDiffuseExplo=false;
 bool destructionOngoing=false;
 
 int destroyCounter=0;
-float ambientDestroyer=1.0f;
+GLfloat ambientDestroyer=1.0f;
 
 GLfloat lightDir[] = {1.0f,  -0.5f, 1.0f};
 GLfloat lightIntensity[] = {0.9f, 0.9f, 0.9f, 0.0f};
@@ -158,8 +158,8 @@ GLfloat diffuseColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat ambient;
 
 bool exploding;
-float diffused=1.5f;
-float diffusedExplosion=1.5f;
+GLfloat diffused=1.5f;
+GLfloat diffusedExplosion=1.5f;
 
 GLfloat PLAYER_ORIGINAL[1][7] = {0.0f, -10.0f, 0.0f,0.0f,1.0f, 0.0f, 0.0f};
 GLfloat PLAYER[1][7] = {0.0f, -10.0f, 0.0f,0.0f,1.0f, 0.0f, 0.0f};
@@ -333,34 +333,34 @@ void setBallColor(void){
 	}
 
 //[number of particles][0-x,1-y,2-z,3-actualx,4-actualy]
-double particles[1000][7];
+GLfloat particles[1000][7];
 
 
-double degreesToRadian(double anglei){
- return anglei*PI/180;
+GLfloat degreesToRadian(GLfloat anglei){
+ return anglei*PI/180.0f;
 }
 
-double involuteX(double radius, double angle){
+GLfloat involuteX(GLfloat radius, GLfloat angle){
 	return radius*(cos(angle)+angle*sin(angle));
 }
 
-double involuteY(double radius, double angle){
+GLfloat involuteY(GLfloat radius, GLfloat angle){
 	return radius*(sin(angle)-angle*sin(angle));
 }
 
-double ArchimedeanX(double angle){
+GLfloat ArchimedeanX(GLfloat angle){
 	return (1+angle)*(cos(angle));
 }
 
-double ArchimedeanY(double angle){
+GLfloat ArchimedeanY(GLfloat angle){
 	return (1+angle)*(sin(angle));
 }
 
-double CircleX(double angle){
+GLfloat CircleX(GLfloat angle){
 	return 10*cos(angle);
 }
 
-double CircleY(double angle){
+GLfloat CircleY(GLfloat angle){
 	return 10*sin(angle);
 }
 
@@ -370,7 +370,7 @@ void drawSpiral(){
 	float extrafragz;
 	for (int i=0;i<120;i++)
 	{
-		particles[i][0]=particles[i][0]+0.001;
+		particles[i][0]=particles[i][0]+0.001f;
 		/*	if (rand()%2==0)
 		{
 			if(particles[i][2]<100)
@@ -392,7 +392,7 @@ void drawSpiral(){
 		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 		} 
 			if(particles[i][0]>120*0.2)
-				particles[i][0]=0.01*1;
+				particles[i][0]=0.01f*1.0f;
 		
 		}
 	}
@@ -402,7 +402,7 @@ void drawCircle(){
 	float extrafragz;
 	for (int i=0;i<120;i++)
 	{
-		particles[i][0]=particles[i][0]+0.001;
+		particles[i][0]=particles[i][0]+0.001f;
 		/*	if (rand()%2==0)
 		{
 			if(particles[i][2]<100)
@@ -415,16 +415,16 @@ void drawCircle(){
 		}*/
 		actualfragment=particles[i][0];
 		particles[i][4]=CircleY(particles[i][0]);
-		particles[i][3]=CircleX(particles[i][0])-100;
+		particles[i][3]=CircleX(particles[i][0])-100.0f;
 		display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]-particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 
 		if(i<50){
-		extrafragz=0,36-(i*0.03);
+		extrafragz=0.36f-(i*0.03f);
 		display_at(5,particles[i][4], particles[i][2]-(extrafragz), particles[i][3],particles[i][1]+particles[i][3],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 		display_at(5,particles[i][4], particles[i][2]+(extrafragz), particles[i][3],-particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 		} 
-			if(particles[i][0]>120*0.2)
-				particles[i][0]=0.01*1;
+			if(particles[i][0]>120.0f*0.2f)
+				particles[i][0]=0.01f*1.0f;
 		
 		}
 	}
@@ -436,7 +436,7 @@ void populateTransitionDisplacement(){
 			for (int i=0;i<120;i++)
 				{
 					 actualfragment=particles[i][0];
-					particles[i][5]= (CircleX(particles[i][0])-100-particles[i][3])/transitionChangeTime;
+					particles[i][5]= (CircleX(particles[i][0])-100.0f-particles[i][3])/transitionChangeTime;
 					particles[i][6]= (CircleY(particles[i][0])-particles[i][4])/transitionChangeTime;
 				
 					display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
@@ -451,7 +451,7 @@ void populateTransitionDisplacement(){
 
 					actualfragment=particles[i][0];
 					// -1     3   
-					particles[i][5]= (CircleX(particles[i][0])-100-particles[i][3])/transitionChangeTime;
+					particles[i][5]= (CircleX(particles[i][0])-100.0f-particles[i][3])/transitionChangeTime;
 					particles[i][6]= (CircleY(particles[i][0])-particles[i][4])/transitionChangeTime;
 					
 					display_at(5,particles[i][4], particles[i][2],  particles[i][3],particles[i][1]+particles[i][4],0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
@@ -464,7 +464,7 @@ void populateTransitionDisplacement(){
 
 void changeParticles(){
 	bool complete=true;
-	double extrafragz;
+	GLfloat extrafragz;
 	if (populateParticlesShiftDistance)
 	{
 		populateTransitionDisplacement();
@@ -531,14 +531,14 @@ void changeParticles(){
 
 void createParticles(){
 
-	double radius=60.0;
-	double anglehere=0.1;
-	double ztemp=0;
+	GLfloat radius=60.0f;
+	GLfloat anglehere=0.1f;
+	GLfloat ztemp=0.0f;
 	for (int i=0;i<120;i++)
 	{
-		anglehere = 0.2 * i;
+		anglehere = 0.2f * i;
 		particles[i][0]=anglehere;
-		particles[i][1]=rand() % 360;
+		particles[i][1]=GLfloat (rand() % 360);
 		particles[i][2]=0;
 		particles[i][3]=0;
 		particles[i][5]=0;
@@ -547,15 +547,15 @@ void createParticles(){
 		if (rand()%2==0)
 		{
 			if(ztemp<100)
-				ztemp+=0.1;
+				ztemp+=0.1f;
 		}
 		else
 		{
 			if(ztemp>-100)
-				ztemp-=0.1;
+				ztemp-=0.1f;
 		}
 		particles[i][2]=ztemp;
-		anglehere+=2.0;
+		anglehere+=2.0f;
 		
 	}
 	//changeParticles();	
@@ -565,7 +565,7 @@ void createParticles(){
 void drawParticles(){
 	float actualy,actualx;
 	float extrafragz;
-	actualfragment=0;		// primeiro o não transparente
+	actualfragment=0.0f;		// primeiro o não transparente
 	color=0;
 	setBallColor();
 	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f);
@@ -943,9 +943,9 @@ void init(void)
 
 	toDestroy[positiont][0]=1.0f;												//check To Destroy
 	toDestroy[positiont][1]=POSITION[0][linha%2][coluna][0];					//x
-	toDestroy[positiont][2]=POSITION[0][linha%2][coluna][1] -14.0*(linha/2);	//y
+	toDestroy[positiont][2]=GLfloat (POSITION[0][linha%2][coluna][1] -14.0f*(linha/2.0f));	//y
 	toDestroy[positiont][3]=0.0f;												//z
-	toDestroy[positiont][4]=GAMEPLAY[0][linha][coluna][1];						//color
+	toDestroy[positiont][4]=GLfloat (GAMEPLAY[0][linha][coluna][1]);						//color
 	toDestroy[positiont][5]=1.0f;												//possible variation of destruction animation
 	GAMEPLAY[0][linha][coluna][1]=0;
 	GAMEPLAY[0][linha][coluna][0]=0;
@@ -958,7 +958,7 @@ void init(void)
 	for (int i=0;i < 20;i++){
 		if (toDestroy[i][0]==1.0f){
 
-			color = toDestroy[i][4];
+			color = GLint(toDestroy[i][4]);
 			destructionOngoing=true;
 			
 			destroyCounter++;
@@ -1244,7 +1244,8 @@ void found_empty(int i,int j){
 				for(int j=0;j<7;j++){
 					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
 				}
-				MOVE_PLAYER[0][3] = MOVE_PLAYER_ORIGINAL[0][3];
+				//ARMINDO
+				MOVE_PLAYER[0][1] = MOVE_PLAYER_ORIGINAL[0][1];
 				for(int j=0;j<2;j++){
 					MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
 				}
@@ -1286,14 +1287,14 @@ void display(void){
 	if (move==0 && (PLAYER[0][0] == PLAYER_ORIGINAL[0][0]) && (PLAYER[0][1] == PLAYER_ORIGINAL[0][1]) && (angle!=-1.57079633f || angle2!=0.0f) ){
 				
 				if (angle> -1.57079633f)
-				{angle-=0.0001;}
+				{angle-=0.0001f;}
 				if (angle< -1.57079633f)
-				{angle+=0.0001;}
+				{angle+=0.0001f;}
 
 				if (angle2> 0.0f)
-				{angle2-=0.0001;}
+				{angle2-=0.0001f;}
 				if (angle2< 0.0f)
-				{angle2+=0.0001;}
+				{angle2+=0.0001f;}
 
 				
 	}
@@ -1466,7 +1467,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	setBallColor();
 	
 	if (increment){
-		lightDir[0]=lightDir[0]+0.001f;
+		lightDir[0]=lightDir[0]+0.01f;
 		
 		//diffused+=0.1f;
 		}
@@ -1487,7 +1488,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 
 
 		if (incrementy){
-		lightDir[1]=lightDir[1]+0.001f;
+		lightDir[1]=lightDir[1]+0.003f;
 		
 		}
 
@@ -1496,7 +1497,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	
 	if (!incrementy)
 	{		
-		lightDir[1]=lightDir[1]-0.001f;
+		lightDir[1]=lightDir[1]-0.01f;
 		
 	}
 	if (lightDir[1]<=-1.0)
@@ -1647,7 +1648,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 					setBallColor();
 					//
 					actualfragment=1000;
-					display_at(0,POSITION[0][j%2][k][0], POSITION[0][j%2][k][1] -14.0*(j/2), 0.0f, 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+					display_at(0,POSITION[0][j%2][k][0], POSITION[0][j%2][k][1] -14.0f*(j/2), 0.0f, 45.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
 				
 				}
 			}
@@ -1686,7 +1687,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	glUseProgram(0); //4.
 	
 	glFlush(); //Instructes OpenGL to finish all rendering operations
-	glutSwapBuffers(); //Swaps the display in a double buffering scenario. In double buffering, rendering is done in a offline buffer (not directly on the screen); this avoid flickering 
+	glutSwapBuffers(); //Swaps the display in a GLfloat buffering scenario. In GLfloat buffering, rendering is done in a offline buffer (not directly on the screen); this avoid flickering 
 	checkError ("display");
 }
 
@@ -1888,7 +1889,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			//PLAYER[0][0]-=1;
 
 			if (MOVE_PLAYER[0][0] >= -0.9f){
-				MOVE_PLAYER[0][0] -= 0.01;
+				MOVE_PLAYER[0][0] -= 0.01f;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
 				pointerangle +=0.65f;
 			}
@@ -1898,7 +1899,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			//angle += velocity;
 			//PLAYER[0][0]+=1;
 			if (MOVE_PLAYER[0][0] <= 0.9f){
-				MOVE_PLAYER[0][0] += 0.01;
+				MOVE_PLAYER[0][0] += 0.01f;
 				MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
 				pointerangle -=0.65f;
 			}
@@ -1915,7 +1916,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			*/
 
 			if (MOVE_PLAYER_TRANSLATE[0][0] >= -0.9f){
-				MOVE_PLAYER_TRANSLATE[0][0] -= 0.1;
+				MOVE_PLAYER_TRANSLATE[0][0] -= 0.1f;
 				MOVE_PLAYER_TRANSLATE[0][1] = 1 - abs(MOVE_PLAYER_TRANSLATE[0][0]);
 			}
 			break;
@@ -1930,7 +1931,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 			PLAYER[0][1]-=1;
 			*/
 			if (MOVE_PLAYER_TRANSLATE[0][0] <= 0.9f){
-				MOVE_PLAYER_TRANSLATE[0][0] += 0.1;
+				MOVE_PLAYER_TRANSLATE[0][0] += 0.1f;
 				MOVE_PLAYER_TRANSLATE[0][1] = 1 - abs(MOVE_PLAYER_TRANSLATE[0][0]);
 			}
 			break;
@@ -2061,15 +2062,7 @@ void setupCamera(void)
 //	cameraView[4][0]=PLAYER[0][0];
 //	cameraView[4][1]=PLAYER[0][1]+30.0f;
 	//Define the view direction based on the camera's position
-	cameraView[0].x = cameraPos[0].x + cos(angle);
-
-	// Rui edit
-	cameraView[0].y = cameraPos[0].y + sin(angle2);
-	//
-
-	cameraView[0].z = cameraPos[0].z + sin(angle);
-
-
+	
 	//if (cameraChange==0){
 	if (cameraChange==0){
 		cameraMatrix = glm::lookAt(cameraPos[cameraMode],
@@ -2099,7 +2092,7 @@ int main(int argc, char** argv)
 {
 
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //Double buffer; Color display
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //GLfloat buffer; Color display
 
 	glutInitContextVersion(3, 3); //OpenGL 3.3
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG); //Forward compatible profile (Old Opengl (pre-3.x) functions can be used, but SHOULDN'T) 
