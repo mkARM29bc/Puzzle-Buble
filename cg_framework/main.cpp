@@ -39,10 +39,10 @@ int particlesState=0;
 
 
 int visitedBalls[lines][rows];
-float toDestroyBalls[lines][rows];
+GLfloat toDestroyBalls[lines][rows];
 bool visiting=false;
 int sumBalls=0;
-float toDestroy[20][6]={0.0f} ; 
+GLfloat toDestroy[20][6]={0.0f} ; 
 //
 
 //int colorBalls[NUMBER_OBJECTS][NUMBER_OBJECTS];
@@ -366,8 +366,7 @@ GLfloat CircleY(GLfloat angle){
 
 
 void drawSpiral(){
-	float actualy,actualx;
-	float extrafragz;
+	GLfloat extrafragz;
 	for (int i=0;i<120;i++)
 	{
 		particles[i][0]=particles[i][0]+0.001f;
@@ -398,8 +397,7 @@ void drawSpiral(){
 	}
 
 void drawCircle(){
-	float actualy,actualx;
-	float extrafragz;
+	GLfloat extrafragz;
 	for (int i=0;i<120;i++)
 	{
 		particles[i][0]=particles[i][0]+0.001f;
@@ -564,7 +562,7 @@ void createParticles(){
 
 void drawParticles(){
 	float actualy,actualx;
-	float extrafragz;
+	
 	actualfragment=0.0f;		// primeiro o não transparente
 	color=0;
 	setBallColor();
@@ -943,7 +941,7 @@ void init(void)
 
 	toDestroy[positiont][0]=1.0f;												//check To Destroy
 	toDestroy[positiont][1]=POSITION[0][linha%2][coluna][0];					//x
-	toDestroy[positiont][2]=GLfloat (POSITION[0][linha%2][coluna][1] -14.0f*(linha/2.0f));	//y
+	toDestroy[positiont][2]=GLfloat (POSITION[0][linha%2][coluna][1] -14.0*(linha/2));	//y
 	toDestroy[positiont][3]=0.0f;												//z
 	toDestroy[positiont][4]=GLfloat (GAMEPLAY[0][linha][coluna][1]);						//color
 	toDestroy[positiont][5]=1.0f;												//possible variation of destruction animation
@@ -1467,7 +1465,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	setBallColor();
 	
 	if (increment){
-		lightDir[0]=lightDir[0]+0.01f;
+		lightDir[0]=lightDir[0]+0.003f;
 		
 		//diffused+=0.1f;
 		}
@@ -1478,7 +1476,7 @@ GLfloat POSITION[1][2][8][2] = {{{
 	
 	if (!increment)
 	{		
-		lightDir[0]=lightDir[0]-0.001f;
+		lightDir[0]=lightDir[0]-0.003f;
 		
 	//	diffused-=0.1f;	
 	}
@@ -1497,15 +1495,15 @@ GLfloat POSITION[1][2][8][2] = {{{
 	
 	if (!incrementy)
 	{		
-		lightDir[1]=lightDir[1]-0.01f;
+		lightDir[1]=lightDir[1]-0.003f;
 		
 	}
 	if (lightDir[1]<=-1.0)
 	{incrementy=true;}
 
 	if (incrementDiffuseBall){
-	diffused+=0.001f;}
-	else{diffused-=0.001f;}
+	diffused+=0.0001f;}
+	else{diffused-=0.0001f;}
 
 	if (diffused>=1.6f){incrementDiffuseBall=false;}
 	if (diffused<=1.0f){incrementDiffuseBall=true;}
