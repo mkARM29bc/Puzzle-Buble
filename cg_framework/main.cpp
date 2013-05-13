@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <FreeImage.h>
+//#include <vector>
 
 #include "display.h"
 #include "main.h"
@@ -283,6 +284,14 @@ GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 int end_line = 7;
 int end_game = 0;
 
+
+/*
+FALL_BALL fall_ball;
+
+fall_ball.x = 0.0f;
+fall_ball.y = 0.0f;
+fall_ball.speed = 0.0f;
+*/
 
 /* 
 	Error checking function:
@@ -1122,6 +1131,8 @@ void found_empty(int i,int j){
 							if(TEST_SPHERE[0][i][j][0] == 0 && GAMEPLAY[0][i][j][0] == 1){
 								GAMEPLAY[0][i][j][0] = 0;
 								GAMEPLAY[0][i][j][1] = 0; 
+
+
 							}
 						}
 					}
@@ -1514,53 +1525,7 @@ void display(void){
 					}
 				}
 			}
-			/*
-			
-GLfloat POSITION[1][2][8][2] = {{{
-	{-28.0f,70.0f},{-20.0f,70.0f},{-12.0f,70.0f},{-4.0f,70.0f},{4.0f,70.0f},{12.0f,70.0f},{20.0f,70.0f},{28.0f,70.0f}
-},{
-	{0.0f,0.0f},{-24.0f,63.0f},{-16.0f,63.0f},{-8.0f,63.0f},{0.0f,63.0f},{8.0f,63.0f},{16.0f,63.0f},{24.0f,63.0f}
-}}};
-			*/
-			/*
-			while (true){
 
-
-
-				if ((foundX == 1 && foundY == 1) || (i==lines && j == rows)){
-					break;
-				}
-
-				if(foundX==0){
-					if (i%2==0){
-						if (PLAYER[0][1] <= (70.0-i*7.0)+7.0   && PLAYER[0][1] >= (70.0-i*7.0)-7.0 ){ //7
-							foundX = 1;
-						}
-						else{
-							i = i+1;
-						}
-					}
-
-					else{
-						if (PLAYER[0][1] <= (70.0-(i+1)*7.0)+7.0   && PLAYER[0][1] >= (70.0-(i+1)*7.0)-7.0 ){ //7
-							foundX = 1;
-						}
-						else{
-							i = i+1;
-						}
-					}
-				}
-
-				if (PLAYER[0][0] <= (-28.0+j*8.0)+8.0 && PLAYER[0][0] >= (-28.0+j*8.0)-8.0){ //8
-					foundY = 1;
-				}
-				else{
-					j = j+1;
-				}
-				
-			}
-			*/
-			
 			//if ((GAMEPLAY[0][i][j][0] == 1 && foundX == 1 && foundY == 1) || (i==0 && foundY == 1 && GAMEPLAY[0][i][j][0] == 2)){
 				if(found==1){
 					found_empty(i,j);
