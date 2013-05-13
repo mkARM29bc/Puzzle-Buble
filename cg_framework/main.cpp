@@ -179,13 +179,13 @@ GLfloat COLORS[4][3] = {
 GLint LEVELS[2][8][8][2] = {
 	//LEVEL 0
 {{
-	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1} 
 },{
-	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	{-1,1},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
 },{
-	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2},{1,2}
 },{
-	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	{-1,' '},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2}
 },{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
@@ -283,6 +283,8 @@ GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
 int end_line = 7;
 int end_game = 0;
+
+int NUMBER_OF_BALLS = 0;
 
 
 /*
@@ -1062,6 +1064,7 @@ void destroy(){
 				 GAMEPLAY[0][i][j][0]=0;
 				 GAMEPLAY[0][i][j][1]=0; 
 				 toDestroyBalls[i][j]=0;
+				 NUMBER_OF_BALLS = NUMBER_OF_BALLS - 1;
 
 			}
 
@@ -1082,6 +1085,7 @@ void found_empty(int i,int j){
 			if (foundX == 1 && foundY == 1){
 				
 				GAMEPLAY[0][i][j][0] = 1;
+				NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
 				printf("\n colisao2  i = %d and j = %d \n",i,j);
 
 				
@@ -1120,6 +1124,9 @@ void found_empty(int i,int j){
 									if(j+1<rows){
 										if(TEST_SPHERE[0][i-1][j+1][0] == 1)
 											TEST_SPHERE[0][i][j][0] = 1;
+
+										if(i%2 == 0 && TEST_SPHERE[0][i][j+1][0] == 1) 
+											TEST_SPHERE[0][i][j][0] = 1;
 									}									
 								}
 							}
@@ -1132,6 +1139,7 @@ void found_empty(int i,int j){
 								GAMEPLAY[0][i][j][0] = 0;
 								GAMEPLAY[0][i][j][1] = 0; 
 
+								NUMBER_OF_BALLS = NUMBER_OF_BALLS - 1;
 
 							}
 						}
@@ -1319,34 +1327,6 @@ void found_empty(int i,int j){
 
 					}
 
-
-					/*
-					if(i%2==0 && j==0)
-						if(GAMEPLAY[0][i+1][j+1][0] == 0)
-							GAMEPLAY[0][i+1][j+1][0] = 2;
-
-					if(i%2==1 && j==rows-1)
-						if(GAMEPLAY[0][i+1][j-1][0] == 0)
-							GAMEPLAY[0][i+1][j-1][0] = 2;
-
-
-					if(j-1>=0)
-						if(GAMEPLAY[0][i][j-1][0] == 0)
-							GAMEPLAY[0][i][j-1][0] = 2;
-
-					if(j+1<8)
-						if(GAMEPLAY[0][i][j+1][0] == 0)
-							GAMEPLAY[0][i][j+1][0] = 2;
-							
-					if(i+1<lines){
-						if(GAMEPLAY[0][i+1][j][0] == 0)
-							GAMEPLAY[0][i+1][j][0] = 2;
-
-						if(j+1<8)
-							if(GAMEPLAY[0][i+1][j+1][0] == 0)
-								GAMEPLAY[0][i+1][j+1][0] = 2;
-					}
-					*/
 				}
 
 				sumBalls=0;
@@ -1374,6 +1354,20 @@ void found_empty(int i,int j){
 					}
 				printf("\n");
 				}
+				
+				printf("NUMBER_OF_BALLS = %d\n",NUMBER_OF_BALLS);
+
+				if(NUMBER_OF_BALLS == 0){
+					restart = 1;
+					levels = levels + 1;
+
+					if (levels == 2){
+						levels = 0;
+					}
+					
+					}
+				
+
 				for(int j=0;j<rows;j++){
 						if(GAMEPLAY[0][end_line][j][0] == 1){
 							end_game = 1;
@@ -1505,7 +1499,7 @@ void display(void){
 				}
 
 				if(foundX==0 && i>=0){
-					if(PLAYER[0][1] <= (70.0-i*7.0)+5.25   && PLAYER[0][1] >= (70.0-i*7.0)-5.25){
+					if(PLAYER[0][1] <= (70.0-i*7.0)+0.0   && PLAYER[0][1] >= (70.0-i*7.0)-7.0){ //5.25
 						//printf("POSITION_Y1= %f POSITION_Y2= %f\n",(70.0-i*7.0)-7.0,(70.0-i*7.0)+7.0);
 						foundX=1;
 					}
@@ -1515,7 +1509,7 @@ void display(void){
 				}
 
 				if(foundY==0 && j>=0){
-					if(PLAYER[0][0] <= (-28.0+j*8.0)+6.0 && PLAYER[0][0] >= (-28.0+j*8.0)-6.0){
+					if(PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //6.0
 						
 						//printf("POSITION_X1= %f POSITION_X2= %f\n",(-28.0+j*8.0)-8.0,(-28.0+j*8.0)+8.0);
 						foundY=1;
@@ -1630,6 +1624,7 @@ void display(void){
 	if (restart == 1){
 
 		end_game = 0;
+		NUMBER_OF_BALLS = 0;
 
 		for (int i=0;i<players;i++){
 			for (int j=0;j<8;j++){
@@ -1656,6 +1651,8 @@ void display(void){
 					}
 
 					if(GAMEPLAY[0][j][k][0] == 1){
+
+						NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
 						
 						if(k-1>=0)
 							if(GAMEPLAY[0][j][k-1][0] == 0)

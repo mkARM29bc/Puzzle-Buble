@@ -5,13 +5,13 @@
 
 const int objloader = 6;
 
-std::vector<fall_ball>;
-
-struct fall_ball{
+struct FALL_BALL{
 	GLfloat x;
 	GLfloat y;
 	double speed;
 };
+
+std::vector<FALL_BALL>; 
 
 extern GLuint vao[objloader];
 extern OBJLoader object[objloader];
