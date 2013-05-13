@@ -9,9 +9,6 @@
 #include "display.h"
 #include "main.h"
 
-
-
-
 #define SPACEBAR 32
 
 #define PI 3.14159265f
@@ -28,7 +25,7 @@ int transitionTime=0;
 bool debug=true;
 const int NUMBER_OBJECTS = 8;
 const int lines = 8;
-const int rows = 8;
+const int column  = 8;
 
 //Rui
 GLfloat anglestart=0.0;
@@ -39,8 +36,8 @@ GLfloat actualfragment;
 int particlesState=0;
 
 
-int visitedBalls[lines][rows];
-GLfloat toDestroyBalls[lines][rows];
+int visitedBalls[lines][column];
+GLfloat toDestroyBalls[lines][column];
 bool visiting=false;
 int sumBalls=0;
 GLfloat toDestroy[20][6]={0.0f} ; 
@@ -132,8 +129,6 @@ int restart = 1;
 int levels = 1;
 int players = 1;
 
-
-
 //Rui - controls light movements
 bool increment=false;
 bool incrementy=true;
@@ -168,15 +163,8 @@ GLfloat MOVE_PLAYER_ORIGINAL[1][2] = {0.0f,1.0f};
 GLfloat MOVE_PLAYER_TRANSLATE[1][2] = {0.0f,1.0f};
 GLfloat MOVE_PLAYER[1][2] = {0.0f,1.0f};
 
-// COLORS {Red,Green,Blue,Yellow}
-/*
-GLfloat COLORS[4][3] = {
-	{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,1.0f,0.0f}
-};
-*/
-
-// LEVELS [number of level] [lines][rows][0 relate of the ball , 1 relate of the color]
-GLint LEVELS[2][8][8][2] = {
+// LEVELS [number of level] [lines][column][0 relate of the ball , 1 relate of the color]
+GLint LEVELS[2][lines][column][2] = {
 	//LEVEL 0
 {{
 	{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1} 
@@ -215,8 +203,8 @@ GLint LEVELS[2][8][8][2] = {
 }}
 };
 
-// GAMEPLAY [player1 = 0] [lines][rows] [0 relate of the ball , 1 relate of the color]
-GLint GAMEPLAY[1][8][8][2] = {{{
+// GAMEPLAY [player1 = 0] [lines][column] [0 relate of the ball , 1 relate of the color]
+GLint GAMEPLAY[1][lines][column][2] = {{{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
@@ -235,7 +223,7 @@ GLint GAMEPLAY[1][8][8][2] = {{{
 }
 }};
 
-GLint TEST_SPHERE[1][8][8][2] = {{{
+GLint TEST_SPHERE[1][lines][column][2] = {{{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
@@ -254,7 +242,7 @@ GLint TEST_SPHERE[1][8][8][2] = {{{
 }
 }};
 
-GLint RESET_SPHERE[8][8][2] = {{
+GLint RESET_SPHERE[lines][column][2] = {{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
@@ -273,7 +261,7 @@ GLint RESET_SPHERE[8][8][2] = {{
 }
 };
 
-GLfloat POSITION[1][2][8][2] = {{{
+GLfloat POSITION[1][2][column][2] = {{{
 	{-28.0f,70.0f},{-20.0f,70.0f},{-12.0f,70.0f},{-4.0f,70.0f},{4.0f,70.0f},{12.0f,70.0f},{20.0f,70.0f},{28.0f,70.0f}
 },{
 	{0.0f,0.0f},{-24.0f,63.0f},{-16.0f,63.0f},{-8.0f,63.0f},{0.0f,63.0f},{8.0f,63.0f},{16.0f,63.0f},{24.0f,63.0f}
@@ -846,7 +834,7 @@ GLuint loadTexture(char* textureFile)
 
 	void resetVisited(void){
 		for (int i=0;i<lines;i++)
-			for (int j=0;j<rows;j++)
+			for (int j=0;j<column;j++)
 			{visitedBalls[i][j]=0;
 			toDestroyBalls[i][j]=0;
 		}
@@ -1106,7 +1094,7 @@ void found_empty(int i,int j){
 					//teste123
 
 					for (int i=0;i<lines;i++){
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 							if(GAMEPLAY[0][i][j][0] == 1){
 								if(i==0){
 									TEST_SPHERE[0][i][j][0] = 1;
@@ -1121,7 +1109,7 @@ void found_empty(int i,int j){
 										if(TEST_SPHERE[0][i][j-1][0] == 1)
 											TEST_SPHERE[0][i][j][0] = 1;
 											
-									if(j+1<rows){
+									if(j+1<column){
 										if(TEST_SPHERE[0][i-1][j+1][0] == 1)
 											TEST_SPHERE[0][i][j][0] = 1;
 
@@ -1134,7 +1122,7 @@ void found_empty(int i,int j){
 					}
 
 					for (int i=0;i<lines;i++){
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 							if(TEST_SPHERE[0][i][j][0] == 0 && GAMEPLAY[0][i][j][0] == 1){
 								GAMEPLAY[0][i][j][0] = 0;
 								GAMEPLAY[0][i][j][1] = 0; 
@@ -1158,14 +1146,14 @@ void found_empty(int i,int j){
 				printf("\n");
 				}
 					for (int i=0;i<lines;i++){
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 							TEST_SPHERE[0][i][j][0] = RESET_SPHERE[i][j][0];
 						}
 					}
 				
 				
 					for (int i=0;i<lines;i++)
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 							if(GAMEPLAY[0][i][j][0] == 2){
 								GAMEPLAY[0][i][j][0] = 0;
 							}
@@ -1173,7 +1161,7 @@ void found_empty(int i,int j){
 					
 
 					for (int i=0;i<lines;i++)
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 
 							if(i==0 && GAMEPLAY[0][i][j][0] == 0){
 								GAMEPLAY[0][i][j][0] = 2;
@@ -1219,7 +1207,7 @@ void found_empty(int i,int j){
 					}
 
 					else{
-						if(j==rows-1)
+						if(j==column-1)
 							if(GAMEPLAY[0][i+1][j-1][0] == 0)
 								GAMEPLAY[0][i+1][j-1][0] = 2;
 
@@ -1295,7 +1283,7 @@ void found_empty(int i,int j){
 					}
 
 					else{
-						if(j==rows-1)
+						if(j==column-1)
 							if(GAMEPLAY[0][i+1][j-1][0] == 0)
 								GAMEPLAY[0][i+1][j-1][0] = 2;
 
@@ -1368,7 +1356,7 @@ void found_empty(int i,int j){
 					}
 				
 
-				for(int j=0;j<rows;j++){
+				for(int j=0;j<column;j++){
 						if(GAMEPLAY[0][end_line][j][0] == 1){
 							end_game = 1;
 							break;
@@ -1377,7 +1365,7 @@ void found_empty(int i,int j){
 
 				if(end_game==1){
 					for(int i=0;i<lines;i++){
-						for(int j=0;j<rows;j++){
+						for(int j=0;j<column;j++){
 							if(GAMEPLAY[0][i][j][0] == 1){
 								GAMEPLAY[0][i][j][1] = 0;
 							}
@@ -1480,7 +1468,7 @@ void display(void){
 
 			//int i=0,j=0, foundX=0,foundY=0;
 
-			int i=lines-1,j=rows-1,found = 0,foundX=0,foundY = 0;
+			int i=lines-1,j=column-1,found = 0,foundX=0,foundY = 0;
 
 			while(true){
 
