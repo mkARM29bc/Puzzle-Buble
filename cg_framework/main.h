@@ -3,7 +3,7 @@
 
 #include "objloader.h"
 
-const int objloader = 6;
+const int objloader = 7;
 
 struct FALL_BALL{
 	GLfloat x;
