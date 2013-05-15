@@ -1,22 +1,25 @@
-﻿Build started 15-05-2013 15:06:11.
-     1>Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
+﻿Build started 16/05/2013 00:21:44.
+     1>Project "C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\cg_framework\cg_framework.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"..\external libs\glew\include" /I"..\external libs\FreeImage\Dist" /I"..\external libs\freeglut\include" /I"..\external libs\glm" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"..\external libs\glew\include" /I"..\external libs\FreeImage\Dist" /I"..\external libs\freeglut\include" /I"..\external libs\glm" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt display.cpp main.cpp
+         display.cpp
          main.cpp
-     1>main.cpp(639): warning C4101: 'actualy' : unreferenced local variable
-     1>main.cpp(639): warning C4101: 'actualx' : unreferenced local variable
-     1>main.cpp(739): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>main.cpp(31): warning C4101: 'temp' : unreferenced local variable
+     1>main.cpp(32): warning C4101: 'signTemp' : unreferenced local variable
+     1>main.cpp(714): warning C4101: 'actualy' : unreferenced local variable
+     1>main.cpp(714): warning C4101: 'actualx' : unreferenced local variable
+     1>main.cpp(817): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\stdio.h(218) : see declaration of 'fopen'
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Release\cg_framework.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Release\cg_framework.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Release\cg_framework.lib" /MACHINE:X86 /SAFESEH Release\colision.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Release\cg_framework.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"..\external libs\freeglut\lib" /LIBPATH:"..\external libs\glew\lib" /LIBPATH:"..\external libs\FreeImage\Dist" freeglut.lib glew32.lib FreeImage.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Release\cg_framework.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Release\cg_framework.lib" /MACHINE:X86 /SAFESEH Release\colision.obj
          Release\display.obj
          Release\main.obj
          Release\objloader.obj
          Generating code
          Finished generating code
-         cg_framework.vcxproj -> C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\Release\cg_framework.exe
-     1>Done Building Project "C:\Users\Cunha\Documents\Visual Studio 2012\Projects\github_associated\Puzzle-Buble\cg_framework\cg_framework.vcxproj" (Build target(s)).
+         cg_framework.vcxproj -> C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\Release\cg_framework.exe
+     1>Done Building Project "C:\Users\Rui Orey\cgarmindo\Puzzle-Buble\cg_framework\cg_framework.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.72
+Time Elapsed 00:00:03.71

@@ -89,7 +89,7 @@ GLfloat diffuseColor2[] = {0.8f+lightDir[1]/10, 0.8f+lightDir[1]/10, 0.8f+lightD
 	
 	}
 
-		if ((va_pos==0 && actualfragment!=0 && actualfragment!=-1) || va_pos==4)
+		if ((va_pos==0 && actualfragment!=0 && actualfragment!=-1) )
 		{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(lightDir[0], lightDir[1], lightDir[2], 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
@@ -126,7 +126,7 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	}
 
 		// does the calculation of light for both fragments and their center
-		if (va_pos==5 || actualfragment==0 || actualfragment==-1)
+		if (va_pos==5 || actualfragment==0 || actualfragment==-1 || va_pos==4)
 	{
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	if (actualfragment==-1 )	glEnable(GL_BLEND); 

@@ -13,6 +13,83 @@
 
 #define PI 3.14159265f
 
+GLfloat ship[10]={11.0f,10.0f,-100.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
+bool loop=false;
+GLfloat limitPoints[2][2]={{31.0f,-31.0f},{31.0f,-31.0f}};		// limites para onde a nave se pode mexer(para não sair do ecrã) - 4 cantos cada um com um x e um y
+GLfloat actualPoints[4][2]={{11.0f,11.0f},{-11.0f,-11.0f},{5.0f,11.0f},{0.0f,5.0f}};		// ponto de onde começa uma curva, ponto de destino, pontos das duas extremidades que vao definir as curvas e x e y
+bool modeWall=true;				// define se a nave esta a movimentar-se no plano ao fundo do ecrã ou em profundidade
+GLfloat interpolation=0.0f;  // valor da actual interpolação (0.0-1.0)
+GLfloat interpolationTax=0.0007f;  // taxa de variação da interpolação
+GLfloat shipdepth=-200.0f;
+
+GLfloat pointInterpolation[5][2];
+
+
+
+
+void newBezierPoints(){
+	GLfloat temp;
+	int signTemp;
+	interpolation=0.0f;
+	
+	// guarda o ponto onde está como ponto de partida
+	actualPoints[0][0]=actualPoints[1][0];
+	actualPoints[0][1]=actualPoints[1][1];
+
+	actualPoints[1][0]=(GLfloat) (rand()%100) -50.0f;
+	actualPoints[1][1]=(GLfloat) (rand()%100)-50.0f;
+	
+
+	actualPoints[2][0]=actualPoints[0][0]+(actualPoints[0][0]-actualPoints[3][0]);
+	actualPoints[2][1]=actualPoints[0][1]+(actualPoints[0][1]-actualPoints[3][1]);
+
+	actualPoints[3][1]=(GLfloat) (rand()%100) -50.0f;
+	actualPoints[3][0]=(GLfloat) (rand()%100) -50.0f;
+
+
+
+			
+		
+		}
+
+
+
+
+GLfloat Interpolate(GLfloat a,GLfloat b){
+return ((1-interpolation)*a   + interpolation*b) ;
+}
+
+
+void Bezier(){
+
+	interpolation+=interpolationTax;
+
+
+	pointInterpolation[0][0]=Interpolate(actualPoints[0][0],actualPoints[2][0]);
+	pointInterpolation[0][1]=Interpolate(actualPoints[0][1],actualPoints[2][1]);
+
+	pointInterpolation[1][0]=Interpolate(actualPoints[2][0],actualPoints[3][0]);
+	pointInterpolation[1][1]=Interpolate(actualPoints[2][1],actualPoints[3][1]);
+	
+	pointInterpolation[2][0]=Interpolate(actualPoints[3][0],actualPoints[1][0]);
+	pointInterpolation[2][1]=Interpolate(actualPoints[3][1],actualPoints[1][1]);
+
+	pointInterpolation[3][0]=Interpolate(pointInterpolation[0][0],pointInterpolation[1][0]);
+	pointInterpolation[3][1]=Interpolate(pointInterpolation[0][1],pointInterpolation[1][1]);
+
+	pointInterpolation[4][0]=Interpolate(pointInterpolation[1][0],pointInterpolation[2][0]);
+	pointInterpolation[4][1]=Interpolate(pointInterpolation[1][1],pointInterpolation[2][1]);
+
+	ship[0]=Interpolate(pointInterpolation[3][0],pointInterpolation[4][0]);
+	ship[1]=Interpolate(pointInterpolation[3][1],pointInterpolation[4][1]);
+	
+	if (interpolation>=1.0f)
+	{newBezierPoints();}
+	
+}
+
+
+
 GLfloat blink=1.0f;
 bool incrementblink=true;
 int explodestage=0; //0 -> not exploding, 1 -> imploding, 2-> exploding
@@ -116,7 +193,6 @@ GLfloat angle = -1.57079633f;
 GLfloat angle2 = 0.0f;
 
 //translation, rotation,scale
-GLfloat ship[10]={11.0f,10.0f,-200.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 
 const GLfloat velocity = 0.25f;
 
@@ -634,14 +710,13 @@ void createParticles(){
 	//changeParticles();	
 }
 
-
 void drawParticles(){
 	float actualy,actualx;
 	
 	actualfragment=0.0f;		// primeiro o não transparente
 	color=0;
 	setBallColor();
-	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,1.0f,1.0f,1.0f);
+	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,blink-0.1f*blink,blink-0.1f*blink,blink-0.2f*blink);
 	actualfragment=-1;
 	display_at(0, 0.0f, 0.0f, -100.0f,45.0f,1.0f,1.0f, 1.0f,blink,blink,blink);
 	if(!particleShift)
@@ -660,13 +735,16 @@ void drawParticles(){
 
 
 void shipControl(void){
-	
+	/*
 	if (increment)
 	{ship[1]-=0.05f;
 	ship[0]+=0.05f;}
 	else
 	{ship[1]+=0.05f;
 	ship[0]-=0.05f;}
+	*/
+
+	Bezier();
 
 }
 
@@ -1842,8 +1920,10 @@ void display(void){
 	display_at(3, 0.0f, -0.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,2.0f,2.0f);
 
 	//ship
-	shipControl();
-	display_at(4, ship[0], ship[1],ship[2],ship[3],ship[4],ship[5],ship[6],0.3f,0.3f,0.3f);
+	//shipControl();
+	Bezier();
+
+	display_at(4, ship[0], ship[1],ship[2],ship[3],ship[4],ship[5],ship[6],1.0f,1.0f,1.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -2153,9 +2233,9 @@ void setupCamera(void)
 				ambientComponent[2]=ambient;
 			}
 					
-	cameraPos[3][0]=ship[0]+10.0f;
-	cameraPos[3][1]=ship[1]+10.0f;
-	cameraPos[3][2]=ship[2]+10.0f;
+	cameraPos[3][0]=ship[0];
+	cameraPos[3][1]=ship[1];
+	cameraPos[3][2]=ship[2]-50.0f;
 
 
 	cameraView[3][0]=PLAYER[0][0];
