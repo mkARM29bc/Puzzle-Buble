@@ -1465,6 +1465,16 @@ void display(void){
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
 			}
 
+			//PLAYER[0][1] <= (70.0-i*7.0)+5.25 PLAYER[0][0] <= (-28.0+j*8.0)+6.0
+
+			
+			if(PLAYER[0][1] >= 140.0 || PLAYER[0][1] <=-20.0 || PLAYER[0][0] >= 60.0 || PLAYER[0][0] <= -60.0){
+				move = 0;
+				for(int j=0;j<7;j++){
+					PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
+				}
+			}
+			
 
 			//int i=0,j=0, foundX=0,foundY=0;
 
@@ -1487,7 +1497,7 @@ void display(void){
 				}
 
 				if(foundX==0 && i>=0){
-					if(PLAYER[0][1] <= (70.0-i*7.0)+0.0   && PLAYER[0][1] >= (70.0-i*7.0)-7.0){ //5.25
+					if(PLAYER[0][1] <= (70.0-i*7.0)+5.25   && PLAYER[0][1] >= (70.0-i*7.0)-5.25){ //5.25
 						//printf("POSITION_Y1= %f POSITION_Y2= %f\n",(70.0-i*7.0)-7.0,(70.0-i*7.0)+7.0);
 						foundX=1;
 					}
@@ -1497,7 +1507,7 @@ void display(void){
 				}
 
 				if(foundY==0 && j>=0){
-					if(PLAYER[0][0] <= (-28.0+j*8.0)+4.0 && PLAYER[0][0] >= (-28.0+j*8.0)-4.0){ //6.0
+					if(PLAYER[0][0] <= (-28.0+j*8.0)+6.0 && PLAYER[0][0] >= (-28.0+j*8.0)-6.0){ //6.0
 						
 						//printf("POSITION_X1= %f POSITION_X2= %f\n",(-28.0+j*8.0)-8.0,(-28.0+j*8.0)+8.0);
 						foundY=1;
