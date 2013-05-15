@@ -59,8 +59,7 @@ c changes camera (
 //int colors[500];
 
 float positionbackground=0.05f;
-//float pointerangle=180.0f;
-float ARROW_POINTER[3] = {0.0f,10.0f,180.0f};
+float POINTER = 180.0f;
 float dispx=-35.0f;
 /*end of test*/
 
@@ -71,7 +70,7 @@ float dispx=-35.0f;
 
 
 
-	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj"),("../models/cube.obj"),("../models/triangle.obj"),("../models/Arrow_obj.obj")};
+	OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj"),("../models/cube.obj"),("../models/triangle.obj"),("../models/pointer.obj")};
 
 
 
@@ -1728,20 +1727,8 @@ void display(void){
 	exploding=false;
 	proceedDestruction();
 
-	/*
-	if (MOVE_PLAYER[0][0] >= -0.9f){
-					MOVE_PLAYER[0][0] -= 0.01f;
-					MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-					pointerangle +=1.0f;
-				}
-	*/
-	ARROW_POINTER[0] = 20*MOVE_PLAYER[0][0];
-	ARROW_POINTER[1] =  10.0f - 20*abs(MOVE_PLAYER[0][0]);
-
-	display_at(6, ARROW_POINTER[0], ARROW_POINTER[1], -5.0f,ARROW_POINTER[2],0.0f, 0.0f, 1.0f,3.0f,3.0f,3.0f);
+	display_at(6, 0.0f,-12.0f, -6.0f,POINTER,0.0f, 0.0f, 1.0f,7.0f,7.0f,7.0f);
 	
-	printf("position = %f %f %f\n",ARROW_POINTER[0],ARROW_POINTER[1],ARROW_POINTER[2]);
-
 	//RUI barra cima
 	display_at(1, -35.0f, 75.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,70.0f,2.0f,2.0f);
 
@@ -1974,7 +1961,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 				if (MOVE_PLAYER[0][0] >= -0.9f){
 					MOVE_PLAYER[0][0] -= 0.01f;
 					MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-					ARROW_POINTER[2] +=1.0f;
+					POINTER +=1.0f;
 				}
 			}
 			break;
@@ -1986,7 +1973,7 @@ void keyboardSpecialKeys(int key, int x, int y)
 				if (MOVE_PLAYER[0][0] <= 0.9f){
 					MOVE_PLAYER[0][0] += 0.01f;
 					MOVE_PLAYER[0][1] = 1 - abs(MOVE_PLAYER[0][0]);
-					ARROW_POINTER[2] -=1.0f;
+					POINTER -=1.0f;
 				}
 			}
 			break;
