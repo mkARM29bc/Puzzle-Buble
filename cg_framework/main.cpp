@@ -23,8 +23,7 @@ const int transitionChangeTime=100;
 int transitionTime=0;
 
 bool debug=true;
-const int NUMBER_OBJECTS = 8;
-const int lines = 8;
+const int lines = 10;
 const int column  = 8;
 
 //Rui
@@ -126,7 +125,8 @@ int move = 0;
 int frame=0,time,timebase=0;
 int speed = 10;
 int restart = 1;
-int levels = 1;
+int level = 0;
+const int max_levels = 2;
 int players = 1;
 
 //Rui - controls light movements
@@ -164,16 +164,20 @@ GLfloat MOVE_PLAYER_TRANSLATE[1][2] = {0.0f,1.0f};
 GLfloat MOVE_PLAYER[1][2] = {0.0f,1.0f};
 
 // LEVELS [number of level] [lines][column][0 relate of the ball , 1 relate of the color]
-GLint LEVELS[2][lines][column][2] = {
+GLint LEVELS[max_levels][lines][column][2] = {
 	//LEVEL 0
 {{
 	{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1} 
 },{
-	{-1,1},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
+	{-1,0},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
 },{
 	{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2},{1,2}
 },{
-	{-1,' '},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2}
+	{-1,0},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2},{1,2}
+},{
+	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+},{
+	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
@@ -187,11 +191,15 @@ GLint LEVELS[2][lines][column][2] = {
 {{
 	{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1} 
 },{
-	{-1,1},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
+	{-1,0},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
 },{
 	{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2},{1,2}
 },{
-	{-1,' '},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2}
+	{-1,0},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1},{1,2}
+},{
+	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+},{
+	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
@@ -205,6 +213,10 @@ GLint LEVELS[2][lines][column][2] = {
 
 // GAMEPLAY [player1 = 0] [lines][column] [0 relate of the ball , 1 relate of the color]
 GLint GAMEPLAY[1][lines][column][2] = {{{
+	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+},{
+	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+},{
 	{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 },{
 	{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
@@ -239,10 +251,18 @@ GLint TEST_SPHERE[1][lines][column][1] = {{{
 	{0},{0},{0},{0},{0},{0},{0},{0}
 },{
 	{-1},{0},{0},{0},{0},{0},{0},{0}
+},{
+	{0},{0},{0},{0},{0},{0},{0},{0}
+},{
+	{-1},{0},{0},{0},{0},{0},{0},{0}
 }
 }};
 
 GLint RESET_SPHERE[lines][column][1] = {{
+	{0},{0},{0},{0},{0},{0},{0},{0}
+},{
+	{-1},{0},{0},{0},{0},{0},{0},{0}
+},{
 	{0},{0},{0},{0},{0},{0},{0},{0}
 },{
 	{-1},{0},{0},{0},{0},{0},{0},{0}
@@ -269,7 +289,7 @@ GLfloat POSITION[1][2][column][2] = {{{
 
 GLfloat SIDE_BORDER[1][2] = {{POSITION[0][0][0][0],POSITION[0][0][7][0]}};
 
-int end_line = 7;
+int end_line = 9;
 int end_game = 0;
 
 int NUMBER_OF_BALLS = 0;
@@ -902,8 +922,8 @@ void init(void)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 56);
 
-	for (int i=0;i<NUMBER_OBJECTS;i++){
-		for (int j=0;j<NUMBER_OBJECTS;j++)
+	for (int i=0;i<lines;i++){
+		for (int j=0;j<column;j++)
 			//colorBalls[i][j]=0;
 				GAMEPLAY[0][i][j][1] = 0;
 	//END Rui
@@ -1044,8 +1064,8 @@ void init(void)
 	// checks which balls are tagged to destruction and queue them in a new vector where they will be placed until destroyed animation finishes
 
 void destroy(){
-	for (int i=0;i<8;i++){
-		for (int j=0;j<8;j++){
+	for (int i=0;i<lines;i++){
+		for (int j=0;j<column;j++){
 			if (toDestroyBalls[i][j]==1)
 			{
 				queueDestruction(i,j);
@@ -1134,11 +1154,11 @@ void found_empty(int i,int j){
 					}
 
 					printf("TEST_SPHERE\n");
-					for (int j=0;j<8;j++){
+					for (int j=0;j<lines;j++){
 						if(j%2==1){
 							printf(" ");
 						}
-						for (int k=0;k<8;k++){
+						for (int k=0;k<column;k++){
 							if(TEST_SPHERE[0][j][k][0] != -1){
 								printf("%d ",TEST_SPHERE[0][j][k][0]);
 							}
@@ -1182,7 +1202,7 @@ void found_empty(int i,int j){
 										if(GAMEPLAY[0][i-1][j][0] == 0)
 											GAMEPLAY[0][i-1][j][0] = 2;
 
-							if(j+1<8)
+							if(j+1<column)
 								if(GAMEPLAY[0][i-1][j+1][0] == 0)
 									GAMEPLAY[0][i-1][j+1][0] = 2;
 						}
@@ -1191,7 +1211,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i][j-1][0] == 0)
 								GAMEPLAY[0][i][j-1][0] = 2;
 
-						if(j+1<8)
+						if(j+1<column)
 							if(GAMEPLAY[0][i][j+1][0] == 0)
 								GAMEPLAY[0][i][j+1][0] = 2;
 
@@ -1199,7 +1219,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i+1][j][0] == 0)
 								GAMEPLAY[0][i+1][j][0] = 2;
 
-							if(j+1<8)
+							if(j+1<column)
 								if(GAMEPLAY[0][i+1][j+1][0] == 0)
 									GAMEPLAY[0][i+1][j+1][0] = 2;
 						}
@@ -1224,7 +1244,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i][j-1][0] == 0)
 								GAMEPLAY[0][i][j-1][0] = 2;
 
-						if(j+1<8)
+						if(j+1<column)
 							if(GAMEPLAY[0][i][j+1][0] == 0)
 								GAMEPLAY[0][i][j+1][0] = 2;
 
@@ -1258,7 +1278,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i-1][j][0] == 0)
 								GAMEPLAY[0][i-1][j][0] = 2;
 
-							if(j+1<8)
+							if(j+1<column)
 								if(GAMEPLAY[0][i-1][j+1][0] == 0)
 									GAMEPLAY[0][i-1][j+1][0] = 2;
 						}
@@ -1267,7 +1287,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i][j-1][0] == 0)
 								GAMEPLAY[0][i][j-1][0] = 2;
 
-						if(j+1<8)
+						if(j+1<column)
 							if(GAMEPLAY[0][i][j+1][0] == 0)
 								GAMEPLAY[0][i][j+1][0] = 2;
 
@@ -1275,7 +1295,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i+1][j][0] == 0)
 								GAMEPLAY[0][i+1][j][0] = 2;
 
-							if(j+1<8)
+							if(j+1<column)
 								if(GAMEPLAY[0][i+1][j+1][0] == 0)
 									GAMEPLAY[0][i+1][j+1][0] = 2;
 						}
@@ -1300,7 +1320,7 @@ void found_empty(int i,int j){
 							if(GAMEPLAY[0][i][j-1][0] == 0)
 								GAMEPLAY[0][i][j-1][0] = 2;
 
-						if(j+1<8)
+						if(j+1<column)
 							if(GAMEPLAY[0][i][j+1][0] == 0)
 								GAMEPLAY[0][i][j+1][0] = 2;
 
@@ -1331,11 +1351,11 @@ void found_empty(int i,int j){
 				}
 				move = 0;
 
-				for (int j=0;j<8;j++){
+				for (int j=0;j<lines;j++){
 					if(j%2==1){
 						printf(" ");
 					}
-					for (int k=0;k<8;k++){
+					for (int k=0;k<column;k++){
 						if(GAMEPLAY[0][j][k][0] != -1){
 							printf("%d ",GAMEPLAY[0][j][k][0]);
 						}
@@ -1347,10 +1367,10 @@ void found_empty(int i,int j){
 
 				if(NUMBER_OF_BALLS == 0){
 					restart = 1;
-					levels = levels + 1;
+					level = level + 1;
 
-					if (levels == 2){
-						levels = 0;
+					if (level == max_levels){
+						level = 0;
 					}
 					
 					}
@@ -1618,10 +1638,11 @@ void display(void){
 
 		end_game = 0;
 		NUMBER_OF_BALLS = 0;
+		POINTER = 180.0f;
 
 		for (int i=0;i<players;i++){
-			for (int j=0;j<8;j++){
-				for (int k=0;k<8;k++){
+			for (int j=0;j<lines;j++){
+				for (int k=0;k<column;k++){
 					for(int l=0;l<2;l++){
 						GAMEPLAY[0][j][k][l] = 0;
 					}
@@ -1630,12 +1651,12 @@ void display(void){
 		}
 
 		for (int i=0;i<players;i++){
-			for (int j=0;j<8;j++){
-				for (int k=0;k<8;k++){
+			for (int j=0;j<lines;j++){
+				for (int k=0;k<column;k++){
 					for(int l=0;l<2;l++){
 
-						if((GAMEPLAY[0][j][k][0]== 2 &&  LEVELS[levels][j][k][0] == 0) == 0)
-							GAMEPLAY[0][j][k][l] = LEVELS[levels][j][k][l];
+						if((GAMEPLAY[0][j][k][0]== 2 &&  LEVELS[level][j][k][0] == 0) == 0)
+							GAMEPLAY[0][j][k][l] = LEVELS[level][j][k][l];
 
 					}
 					
@@ -1647,31 +1668,84 @@ void display(void){
 
 						NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
 						
-						if(k-1>=0)
-							if(GAMEPLAY[0][j][k-1][0] == 0)
-								GAMEPLAY[0][j][k-1][0] = 2;
-								
-
-						if(k+1<8)
-							if(GAMEPLAY[0][j][k+1][0] == 0){
-								GAMEPLAY[0][j][k+1][0] = 2;
-							}
-						if(j+1<lines){
-							if(GAMEPLAY[0][j+1][k][0] == 0){
-								GAMEPLAY[0][j+1][k][0] = 2;
-							}
-							if(k-1>=0){
-								if(GAMEPLAY[0][j+1][k-1][0] == 0){
-									GAMEPLAY[0][j+1][k-1][0] = 2;
-
+						
+						if(j%2 ==0){
+							if(k==0)
+								if(GAMEPLAY[i][j+1][k+1][0] == 0){
+									GAMEPLAY[i][j+1][k+1][0] = 2;
+											
 								}
+										
+							if(j-1>=0){
+										
+								if(GAMEPLAY[i][j-1][k][0] == 0)
+									GAMEPLAY[i][j-1][k][0] = 2;
+
+								if(k+1<column)
+									if(GAMEPLAY[i][j-1][k+1][0] == 0)
+										GAMEPLAY[i][j-1][k+1][0] = 2;
+							}
+
+							if(k-1>=0)
+								if(GAMEPLAY[i][j][k-1][0] == 0)
+									GAMEPLAY[i][j][k-1][0] = 2;
+
+							if(k+1<column)
+								if(GAMEPLAY[i][j][k+1][0] == 0)
+									GAMEPLAY[i][j][k+1][0] = 2;
+
+							if(j+1<lines){
+								if(GAMEPLAY[i][j+1][k][0] == 0)
+									GAMEPLAY[i][j+1][k][0] = 2;
+
+							if(k+1<column)
+								if(GAMEPLAY[i][j+1][k+1][0] == 0)
+									GAMEPLAY[i][j+1][k+1][0] = 2;
 							}
 						}
-					}
+
+						
+						
+
+						else{
+							if(k==column-1)
+								if(GAMEPLAY[i][j+1][k-1][0] == 0)
+									GAMEPLAY[i][j+1][k-1][0] = 2;
+
+							if(j-1>=0){
+								if(GAMEPLAY[i][j-1][k][0] == 0)
+									GAMEPLAY[i][j-1][k][0] = 2;
+
+								if(k-1>=0)
+									if(GAMEPLAY[i][j-1][k-1][0] == 0)
+										GAMEPLAY[i][j-1][k-1][0] = 2;
+							}
+
+							if(k-1>=0)
+								if(GAMEPLAY[i][j][k-1][0] == 0)
+									GAMEPLAY[i][j][k-1][0] = 2;
+
+							if(k+1<column)
+								if(GAMEPLAY[i][j][k+1][0] == 0)
+									GAMEPLAY[i][j][k+1][0] = 2;
+
+							if(j+1<lines){
+								if(GAMEPLAY[i][j+1][k][0] == 0)
+									GAMEPLAY[i][j+1][k][0] = 2;
+
+								if(k-1>=0)
+									if(GAMEPLAY[i][j+1][k-1][0] == 0)
+										GAMEPLAY[i][j+1][k-1][0] = 2;
+							}
+						}
+					
+						
+						}
+				}
 
 					
 
-				}
+				
 			}
 			
 			for(int j=0;j<7;j++){
@@ -1687,11 +1761,11 @@ void display(void){
 		move = 0;
 		restart = 0;
 
-		for (int j=0;j<8;j++){
+		for (int j=0;j<lines;j++){
 			if(j%2==1){
 				printf(" ");
 				}
-			for (int k=0;k<8;k++){
+			for (int k=0;k<column;k++){
 				if(GAMEPLAY[0][j][k][0] != -1)
 					printf("%d ",GAMEPLAY[0][j][k][0]);
 			}
@@ -1713,8 +1787,8 @@ void display(void){
 		
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	for(int i=0;i<players;i++){
-		for(int j=0;j<8;j++){
-			for(int k=0;k<8;k++){
+		for(int j=0;j<lines;j++){
+			for(int k=0;k<column;k++){
 				if((j%2 == 1 && k ==0) == 0 && GAMEPLAY[i][j][k][0] == 1){
 					//RUI
 					//color=colorBalls[j][k];
@@ -1903,11 +1977,10 @@ void keyboard(unsigned char key, int x, int y)
 		case 'm':
 			restart = 1;
 
-			if (levels == 1){
-				levels = 0;
-			}
-			else{
-				levels = 1;
+			level = level + 1;
+
+			if (level == max_levels){
+				level = 0;
 			}
 			break;
 		case SPACEBAR:
