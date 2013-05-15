@@ -8,7 +8,8 @@ const int objloader = 7;
 struct FALL_BALL{
 	GLfloat x;
 	GLfloat y;
-	double speed;
+	int color;
+	GLfloat speed;
 };
 
 std::vector<FALL_BALL>; 

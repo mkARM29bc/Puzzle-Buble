@@ -69,7 +69,7 @@ GLfloat diffuseColor2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir
 	
 	
 	}
-		if (va_pos==1)
+		if (va_pos==1 || va_pos==6)
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);

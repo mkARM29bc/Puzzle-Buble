@@ -347,9 +347,9 @@ void setBallColor(void){
 	if (color==0){
 	
 	//diffuseColor[0] = 1.0f;
-	diffuseColor[0] = 1.0f;
-	diffuseColor[1] = 1.0f;
-	diffuseColor[2] = 1.0f;
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
 	}
 	if (color==1){
 	
@@ -374,6 +374,15 @@ void setBallColor(void){
 	}
 	}
 	else{
+		/*
+	if (color==0){
+	
+	//diffuseColor[0] = 1.0f;
+	diffuseColor[0] = 0.0f;
+	diffuseColor[1] = 0.0f;
+	diffuseColor[2] = 0.0f;
+	}
+	*/
 	if (color==1){
 	
 	//diffuseColor[0] = 1.0f;
@@ -903,6 +912,7 @@ void init(void)
 	baseTextureId[3]=loadTexture("");
 	baseTextureId[4]=loadTexture("../models/textures/sky.dds");
 	baseTextureId[5]=loadTexture("../models/textures/sky.dds");
+	baseTextureId[6]=loadTexture("../models/textures/sky.dds");
 	//Rui edit
 	glClearColor(0.8f, 0.8f, 1.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
 	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //Defines the clear color, i.e., the color used to wipe the display
@@ -1388,6 +1398,9 @@ void found_empty(int i,int j){
 						for(int j=0;j<column;j++){
 							if(GAMEPLAY[0][i][j][0] == 1){
 								GAMEPLAY[0][i][j][1] = 0;
+								//color = GAMEPLAY[0][i][j][1];
+								//setBallColor();
+
 							}
 						}
 					}
@@ -1784,6 +1797,7 @@ void display(void){
 	
 	if (galaxyON)
 	drawParticles();
+
 		
 	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
 	for(int i=0;i<players;i++){
@@ -1805,8 +1819,10 @@ void display(void){
 	actualfragment=1000;
 	exploding=false;
 	proceedDestruction();
+	color = 0;
+	setBallColor();
 
-	display_at(6, 0.0f,-12.0f, -6.0f,POINTER,0.0f, 0.0f, 1.0f,7.0f,7.0f,7.0f);
+	display_at(6, 0.0f,-10.0f, 0.0f,POINTER,0.0f, 0.0f, 1.0f,7.0f,7.0f,7.0f);
 	
 	//RUI barra cima
 	display_at(1, -35.0f, 75.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,70.0f,2.0f,2.0f);
@@ -1977,11 +1993,15 @@ void keyboard(unsigned char key, int x, int y)
 		case 'm':
 			restart = 1;
 
+			level = 0;
+
+			/*
 			level = level + 1;
 
 			if (level == max_levels){
 				level = 0;
 			}
+			*/
 			break;
 		case SPACEBAR:
 			if(end_game==0){
