@@ -389,7 +389,23 @@ Error checking function:
 
 It checks for error in the OpenGL pipeline;
 */
+void soundcamera(){		
+			int error2;
+		LPCWSTR d = L"close camera.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);
+		d = L"open camera.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);
+		d = L"play camera.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);}
 
+void soundballout(){		
+			int error2;
+		LPCWSTR d = L"close ballout.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);
+		d = L"open ballout.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);
+		d = L"play ballout.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);}
 
 
 void checkError(const char *functionName)
@@ -953,7 +969,17 @@ void resetVisited(void){
 }
 void init(void) 
 {
+
 	createParticles();
+	LPCWSTR a = L"open ballout.mp3 type mpegvideo";
+		int error = 99;
+		error = mciSendString(a, NULL,0,0);
+		LPCWSTR c = L"open camera.mp3 type mpegvideo";
+		 error = 99;
+		error = mciSendString(c, NULL,0,0);
+				 a = L"open star.mp3 type mpegvideo";
+
+error = mciSendString(a, NULL,0,0);
 
 	/*
 	GLEW initialization.
@@ -1022,6 +1048,15 @@ void init(void)
 		//END Rui
 		checkError("init");
 	}
+	
+	 a = L"open po.mp3 type mpegvideo";
+ error = 99;
+error = mciSendString(a, NULL,0,0);
+int error2;
+LPCWSTR b = L"play po.mp3 repeat";
+error2 = mciSendString(b, NULL, 0, 0); 
+
+
 }
 
 
@@ -1155,7 +1190,7 @@ void proceedDestruction(void){
 			if (ambient >0.1f)
 				ambient-=0.004f;
 			destructionOngoing=false;
-			if (toDestroy[i][3]>=100.0f){
+			if (toDestroy[i][3]>=150.0f){
 				toDestroy[i][0]=0.0f;
 				destroyCounter=1000;}
 
@@ -1213,7 +1248,7 @@ void find_empty_place(int i,int j){
 				lightIntensity[color]+=0.2f;
 
 			}
-
+			 soundballout();
 			destroy();
 
 			//teste123
@@ -1613,6 +1648,13 @@ void display(void){
 
 			if (PLAYER[0][0] < SIDE_BORDER[0][0] || PLAYER[0][0] > SIDE_BORDER[0][1]){
 				MOVE_PLAYER_TRANSLATE[0][0] =  MOVE_PLAYER_TRANSLATE[0][0] * -1;
+							mciSendString( L"close shot.wav", NULL, 0, 0);
+							LPCWSTR c = L"open shot.wav type mpegvideo";
+							int error = 99;
+							error = mciSendString(c, NULL,0,0);
+							int error2;
+							LPCWSTR d = L"play shot.wav";
+							error2 = mciSendString(d, NULL, 0, 0); 
 			}
 
 			if(PLAYER[0][1] >= 140.0 || PLAYER[0][1] <=-20.0 || PLAYER[0][0] >= 60.0 || PLAYER[0][0] <= -60.0){
@@ -1943,6 +1985,7 @@ void display(void){
 	}
 	actualfragment=1000;
 	exploding=false;
+	
 	proceedDestruction();
 	color = 0;
 	setBallColor();
@@ -2016,13 +2059,7 @@ void reshape (int w, int h)
 
 
 
-void soundcamera(){		mciSendString( L"close camera.mp3", NULL, 0, 0);
-		LPCWSTR c = L"open camera.mp3 type mpegvideo";
-		int error = 99;
-		error = mciSendString(c, NULL,0,0);
-		int error2;
-		LPCWSTR d = L"play camera.mp3";
-		error2 = mciSendString(d, NULL, 0, 0);}
+
 /*
 [FREEGLUT]
 Keyboard handling function
@@ -2050,6 +2087,8 @@ case 'c':
 		//move=1;
 		cameraChange=0;
 		cameraMode +=1;
+		LPCWSTR b = L"pause star.mp3";
+		mciSendString(b, NULL, 0, 0); 
 	}
 
 
@@ -2102,7 +2141,20 @@ case 'c':
 	}
 	if (cameraMode==3)
 		pauseship=true;
+		if (cameraMode!=1 && cameraMode!=0  )
 	soundcamera();
+
+	if (cameraMode==4 ||cameraMode==3){
+
+	int error2;
+	LPCWSTR b = L"close star.mp3 ";
+	error2 = mciSendString(b, NULL, 0, 0);	
+	b = L"open star.mp3 ";
+	error2 = mciSendString(b, NULL, 0, 0);
+
+	b = L"play star.mp3 repeat";
+	error2 = mciSendString(b, NULL, 0, 0); }
+
 	break;
 	case 'a':
 	cameraPos[cameraMode].x += sin(angle) * velocity;
@@ -2156,12 +2208,12 @@ case SPACEBAR:
 	if(end_game==0){
 		if (move == 0){
 			
-			mciSendString( L"close 11.mp3", NULL, 0, 0);
-				LPCWSTR c = L"open 11.mp3 type mpegvideo";
+			mciSendString( L"close shot.wav", NULL, 0, 0);
+				LPCWSTR c = L"open shot.wav type mpegvideo";
 int error = 99;
 error = mciSendString(c, NULL,0,0);
 int error2;
-LPCWSTR d = L"play 11.mp3";
+LPCWSTR d = L"play shot.wav";
 error2 = mciSendString(d, NULL, 0, 0); 
 
 			move = 1;
