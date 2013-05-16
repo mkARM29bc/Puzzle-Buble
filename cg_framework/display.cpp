@@ -109,9 +109,9 @@ GLfloat diffuseColor2[] = {0.8f+lightDir[1]/10, 0.8f+lightDir[1]/10, 0.8f+lightD
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
-	GLfloat ambientComponent2[] = {lightDir[0], lightDir[0], lightDir[0], 0.0f};
-GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
-	GLfloat al[]={lightDir[0],lightDir[0], lightDir[0], 0.3f};
+	GLfloat ambientComponent2[] = {1.0f, 1.0f,1.0f, 1.0f};
+GLfloat diffuseColor2[] = {1.0f,1.0f, 1.0f};
+	GLfloat al[]={1.0f,1.0f, 1.0f, 1.3f};
 	
 	loc = glGetUniformLocation(programId, "lightIntensity");
 	glUniform4fv(loc, 1, al);

@@ -153,7 +153,7 @@ geomId: will hold the VBO identifier (one per attribute: position, normal, etc.)
 
 
 
-OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/cone2.obj"),("../models/textured_cube.obj"),("../models/triangle.obj"),("../models/pointer.obj")};
+OBJLoader object[objloader] = {("../models/esfera1.obj"),("../models/cube2.obj"),("../models/esfera1.obj"),("../models/textured_cube.obj"),("../models/textured_cube.obj"),("../models/triangle.obj"),("../models/pointer.obj")};
 
 
 
@@ -993,7 +993,7 @@ void init(void)
 	baseTextureId[0] = loadTexture("../models/textures/sky.dds");
 	baseTextureId[1]=loadTexture("../models/textures/sky.dds");
 	baseTextureId[2]=loadTexture("../models/textures/sky.dds");
-	baseTextureId[3]=loadTexture("");
+	baseTextureId[3]=loadTexture("../models/textures/info.dds");
 	baseTextureId[4]=loadTexture("../models/textures/base.dds");
 	baseTextureId[5]=loadTexture("../models/textures/sky.dds");
 	baseTextureId[6]=loadTexture("../models/textures/base.dds");
@@ -1905,7 +1905,7 @@ void display(void){
 		drawParticles();
 
 
-	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],1.0f,1.0f,1.0f);
+	display_at(0, PLAYER[0][0], PLAYER[0][1], PLAYER[0][2],PLAYER[0][3],PLAYER[0][4], PLAYER[0][5], PLAYER[0][6],blink,blink,blink);
 	for(int i=0;i<players;i++){
 		for(int j=0;j<lines;j++){
 			for(int k=0;k<column;k++){
@@ -1944,8 +1944,8 @@ void display(void){
 	//RUI - GLOBE
 	display_at(2, dispx, -dispx, -100.0f, 1.0f,1.0f, 1.0f, 1.0f,100.0f,100.0f,100.0f);
 	//END 
-
-	display_at(3, 0.0f, -0.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,2.0f,2.0f,2.0f);
+	if (cameraMode==0)
+	display_at(3, cameraPos[0][0]-5.0f,cameraPos[0][1]-4.0f,cameraPos[0][2]-10.0f,0.0f,0.0f, 1.0f, 1.0f,2.0f,2.0f,0.0f);
 
 	//ship
 	//shipControl();
@@ -2406,7 +2406,7 @@ int main(int argc, char** argv)
 int error = 99;
 error = mciSendString(a, NULL,0,0);
 int error2;
-LPCWSTR b = L"play po.mp3";
+LPCWSTR b = L"play po.mp3 repeat";
 error2 = mciSendString(b, NULL, 0, 0); 
 
 	glutInit(&argc, argv);
