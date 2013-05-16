@@ -49,7 +49,7 @@ void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float r
 
 	loc = glGetUniformLocation(programId, "lightDir");
 	//Rui EDIT - Personalized light for sky
-	if (va_pos==2 )
+	if (va_pos==6 ||va_pos==2 )
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 1.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
@@ -69,7 +69,7 @@ GLfloat diffuseColor2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir
 	
 	
 	}
-		if (va_pos==1 || va_pos==6 || (va_pos==4 && actualfragment!=-1))
+		if (va_pos==1 ||  (va_pos==4 && actualfragment!=-1))
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);

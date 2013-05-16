@@ -27,7 +27,7 @@ bool modeWall=true;				// define se a nave esta a movimentar-se no plano ao fund
 GLfloat interpolation=0.0f;  // valor da actual interpolação (0.0-1.0)
 GLfloat interpolationTax=0.0007f;  // taxa de variação da interpolação
 GLfloat shipdepth=-200.0f;
-
+bool pauseship=false;
 GLfloat pointInterpolation[5][2];
 
 
@@ -749,7 +749,7 @@ void shipControl(void){
 	{ship[1]+=0.05f;
 	ship[0]-=0.05f;}
 	*/
-
+	
 	Bezier();
 
 }
@@ -1949,6 +1949,7 @@ void display(void){
 
 	//ship
 	//shipControl();
+	if (!pauseship)
 	Bezier();
 
 	ship[4]=lightDir[0];
@@ -2076,6 +2077,8 @@ case 'c':
 	if(cameraMode == 5) {
 		cameraMode = 0;
 	}
+	if (cameraMode==3)
+		pauseship=true;
 	soundcamera();
 	break;
 	case 'a':
@@ -2362,6 +2365,8 @@ void setupCamera(void)
 				move=1;
 			cameraChange=0;
 			cameraPosCameraChanger=cameraPos[cameraMode];
+			if (cameraMode==3)
+				pauseship=false;
 		}
 		//}		
 	}
