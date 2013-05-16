@@ -9,7 +9,7 @@
 #include "main.h"
 void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float ry,float rz,float sx,float sy,float sz){
 	
-	if (actualfragment!=0 || va_pos==5 || actualfragment !=-1){
+	if (actualfragment!=0 || va_pos==5 || actualfragment !=-1 ){
 	glActiveTexture(GL_TEXTURE0);
 	
 	
@@ -49,9 +49,9 @@ void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float r
 
 	loc = glGetUniformLocation(programId, "lightDir");
 	//Rui EDIT - Personalized light for sky
-	if (va_pos==2)
+	if (va_pos==2 )
 	{
-	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 0.0f);
+	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 1.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
 	GLfloat ambientComponent2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 1.0f};
 GLfloat diffuseColor2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5};
@@ -69,7 +69,7 @@ GLfloat diffuseColor2[] = {0.5f+lightDir[1]/5, 0.5f+lightDir[1]/5, 0.5f+lightDir
 	
 	
 	}
-		if (va_pos==1 || va_pos==6)
+		if (va_pos==1 || va_pos==6 || (va_pos==4 && actualfragment!=-1))
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 0.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
@@ -126,7 +126,7 @@ GLfloat diffuseColor2[] = {lightDir[0],lightDir[0], lightDir[0]};
 	}
 
 		// does the calculation of light for both fragments and their center
-		if (va_pos==5 || actualfragment==0 || actualfragment==-1 || va_pos==4)
+		if (va_pos==5 || actualfragment==0 || actualfragment==-1 )
 	{
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	if (actualfragment==-1 )	glEnable(GL_BLEND); 
