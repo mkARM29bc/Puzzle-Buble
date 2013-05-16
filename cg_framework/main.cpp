@@ -5,13 +5,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <FreeImage.h>
 //#include <vector>
-
+#include "mmsystem.h"
 #include "display.h"
 #include "main.h"
 
 #define SPACEBAR 32
 
 #define PI 3.14159265f
+
+
+
+
 bool scaled=false;
 bool started=false;
 
@@ -177,7 +181,6 @@ int cameraChange=0;
 GLfloat cameraPosRatio[4];
 GLfloat cameraViewRatio[4];
 GLfloat cameraUpRatio[4];
-
 
 
 
@@ -1987,13 +1990,22 @@ void reshape (int w, int h)
 	checkError ("reshape");
 }
 
+
+
+void soundcamera(){		mciSendString( L"close camera.mp3", NULL, 0, 0);
+		LPCWSTR c = L"open camera.mp3 type mpegvideo";
+		int error = 99;
+		error = mciSendString(c, NULL,0,0);
+		int error2;
+		LPCWSTR d = L"play camera.mp3";
+		error2 = mciSendString(d, NULL, 0, 0);}
 /*
 [FREEGLUT]
 Keyboard handling function
 */
 
 void keyboard(unsigned char key, int x, int y)
-{if (!exploding)
+{if (!exploding && started)
 switch (key) {
 case 27:
 	exit(0);
@@ -2064,8 +2076,9 @@ case 'c':
 	if(cameraMode == 5) {
 		cameraMode = 0;
 	}
+	soundcamera();
 	break;
-case 'a':
+	case 'a':
 	cameraPos[cameraMode].x += sin(angle) * velocity;
 	cameraPos[cameraMode].z -= cos(angle) * velocity;
 	break;
@@ -2116,6 +2129,15 @@ case 'm':
 case SPACEBAR:
 	if(end_game==0){
 		if (move == 0){
+			
+			mciSendString( L"close 11.mp3", NULL, 0, 0);
+				LPCWSTR c = L"open 11.mp3 type mpegvideo";
+int error = 99;
+error = mciSendString(c, NULL,0,0);
+int error2;
+LPCWSTR d = L"play 11.mp3";
+error2 = mciSendString(d, NULL, 0, 0); 
+
 			move = 1;
 			MOVE_PLAYER_TRANSLATE[0][0] = MOVE_PLAYER[0][0];
 			MOVE_PLAYER_TRANSLATE[0][1] = MOVE_PLAYER[0][1];
@@ -2372,9 +2394,15 @@ void mainLoop(void)
 	setupCamera();
 	display();
 }
-
 int main(int argc, char** argv)
 {
+
+	LPCWSTR a = L"open po.mp3 type mpegvideo";
+int error = 99;
+error = mciSendString(a, NULL,0,0);
+int error2;
+LPCWSTR b = L"play po.mp3";
+error2 = mciSendString(b, NULL, 0, 0); 
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB); //GLfloat buffer; Color display
