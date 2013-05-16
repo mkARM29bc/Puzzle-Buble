@@ -9,7 +9,7 @@
 #include "main.h"
 void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float ry,float rz,float sx,float sy,float sz){
 	
-	if (actualfragment!=0 || va_pos==5 || actualfragment !=-1 ){
+	if ((actualfragment!=0 || va_pos==5 || actualfragment !=-1) && cellshading!=1){
 	glActiveTexture(GL_TEXTURE0);
 	
 	
@@ -49,7 +49,7 @@ void display_at(int va_pos,float tx,float ty,float tz, float ra,float rx,float r
 
 	loc = glGetUniformLocation(programId, "lightDir");
 	//Rui EDIT - Personalized light for sky
-	if (va_pos==6 ||va_pos==2 )
+	if ((va_pos==6 && cellshading!=1) ||va_pos==2 )
 	{
 	glm::vec4 transformedLightDir = cameraMatrix * glm::vec4(1.0f, 0.5f, 1.0f, 1.0f);
 	glUniform3fv(loc, 1, (GLfloat *)&transformedLightDir[0]);
@@ -126,10 +126,10 @@ GLfloat diffuseColor2[] = {1.0f,1.0f, 1.0f};
 	}
 
 		// does the calculation of light for both fragments and their center
-		if (va_pos==5 || actualfragment==0 || actualfragment==-1 )
+		if (va_pos==5 || actualfragment==0 || actualfragment==-1 || cellshading==1 )
 	{
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	if (actualfragment==-1 )	glEnable(GL_BLEND); 
+	if (actualfragment==-1 || cellshading==1 )	glEnable(GL_BLEND); 
 	
 	GLfloat alphalight=1.0f;
 
@@ -156,7 +156,7 @@ GLfloat diffuseColor2[] = {1.0f,1.0f, 1.0f};
 		diffuseColor2[2] = 0.3f;
 
 	}
-		if (actualfragment==-1 ){
+		if (actualfragment==-1 || cellshading==1 ){
 		ambientComponent2[0] = 1.0f;
 		ambientComponent2[1] = 1.0f;
 		ambientComponent2[2] = 1.0f;

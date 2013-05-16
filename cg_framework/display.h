@@ -12,6 +12,7 @@ extern GLfloat diffuseColor[];
 extern bool exploding;
 extern GLfloat actualfragment;
 extern GLfloat blink;
+extern int cellshading;
 
 
 //GLuint vertexShaderId;

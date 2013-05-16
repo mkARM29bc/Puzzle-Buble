@@ -15,10 +15,9 @@
 
 
 
-
+int cellshading=0;
 bool scaled=false;
 bool started=false;
-
 GLfloat ship[10]={11.0f,10.0f,-150.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 bool loop=false;
 GLfloat limitPoints[2][2]={{31.0f,-31.0f},{31.0f,-31.0f}};		// limites para onde a nave se pode mexer(para não sair do ecrã) - 4 cantos cada um com um x e um y
@@ -1766,6 +1765,9 @@ void display(void){
 
 	// RESTART_THE_GAME_SET
 	if (restart == 1){
+	
+	
+		
 
 		end_game = 0;
 		NUMBER_OF_BALLS = 0;
@@ -1902,6 +1904,11 @@ void display(void){
 			}
 			printf("\n");
 		}
+			scaled=false;
+	
+		for  (int i=0;i<lines;i++ )
+			for  (int j=0;j<column;j++ )
+			scaleBall[i][j]=0.0f;
 	}
 
 	//if (cameraMode!=1)
@@ -1941,6 +1948,10 @@ void display(void){
 	setBallColor();
 
 	display_at(6, 0.0f,-10.0f, 0.0f,POINTER,0.0f, 0.0f, 1.0f,7.0f,7.0f,7.0f);
+
+	cellshading=1;
+	display_at(6, 0.0f,-10.0f, 0.0f,POINTER,0.0f, 0.0f, 1.0f,7.5f+blinkaux,7.5f+blinkaux,7.5f+blinkaux);
+	cellshading=0;
 
 	//RUI barra cima
 	display_at(1, -35.0f, 75.0f, 0.0f,0.0f,0.0f, -1.0f, 1.0f,70.0f,2.0f,2.0f);
