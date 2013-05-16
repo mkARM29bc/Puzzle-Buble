@@ -1054,21 +1054,33 @@ void checkSurroundingBalls(int l, int c){
 
 	sumBalls++;
 	//printf("\n \n SUMBALLS: %d",sumBalls);
-	int linha,coluna;
+	int linha,coluna,ctemp;
 	for (int ltemp=-1;ltemp<=1;ltemp++){
-		for (int ctemp=-1;ctemp<=1;ctemp++)
+		for (int ctemp2=-1;ctemp2<1;ctemp2++)
 		{
+			ctemp=ctemp2;
+			if (l%2==0 && ltemp!=0 && ctemp==-1)
+				ctemp=1;
+			if (ltemp==0 && ctemp==0)
+				ctemp=1;
+
+			//aqui para corrigir
 			linha=l+ltemp;
 			coluna=c+ctemp;
 
+			printf("Verificar bola linha %d e coluna %d\n",l+ltemp, c+ctemp);
 			if ((l+ltemp)>=0 && (l+ltemp)<=7 && (c+ctemp)>=0 && (c+ctemp)<=7){
+				printf("passou teste1");
 				//printf(" teste linha:%d coluna:%d\n GAMEPLAY[0][linha][coluna][0] :%d\nGAMEPLAY[0][linha][coluna][1]:%d\ncolorActive%d\n",linha,coluna,GAMEPLAY[0][linha][coluna][0],GAMEPLAY[0][linha][coluna][1],colorActive);
 				if ((ltemp != ctemp || ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
 				{
+					printf("passou teste2");
 					checkSurroundingBalls(l+ltemp, c+ctemp);
+					
 				}
 
 				else
+					printf("Verificada bola linha %d e coluna %d e nada.\n",l+ltemp, c+ctemp);
 					if ((visitedBalls[l+ltemp][c+ctemp]==0) && GAMEPLAY[0][l+ltemp][c+ctemp][1]!=colorActive )
 					{
 						visitedBalls[l+ltemp][c+ctemp]=1;
