@@ -16,6 +16,8 @@
 
 
 int cellshading=0;
+bool green,red,blue=true;
+bool ballselected;
 bool scaled=false;
 bool started=false;
 GLfloat ship[10]={11.0f,10.0f,-150.0f, 45.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
@@ -129,8 +131,8 @@ GLfloat toDestroy[20][6]={0.0f} ;
 bool inited = false; //Have we done initialization?
 int ballAtX=0;
 int ballAtY=0;
-int color=rand()%3+1;;
-int colorActive=color;
+GLint color=rand()%3+1;;
+GLint colorActive=color;
 /* Rui testing colors variable & more
 
 c changes camera (
@@ -1223,6 +1225,30 @@ void destroy(){
 }
 
 
+void countBalls(){
+	blue=false;
+	green=false;
+	red=false;
+	
+	GLint auxcolor;
+		for (int i=0;i<lines;i++)
+		{
+			for (int j=0;j<column;j++){
+				auxcolor=GAMEPLAY[0][i][j][1];
+				if (auxcolor==1 && !red)
+				{red=true;}
+				if (auxcolor==2 && !green)
+				{green=true;}
+				if (auxcolor==3 && !blue)
+				{blue=true;}
+
+				if (red && blue && green) break;
+			}
+			if (red && blue && green) break;
+		}
+
+}
+
 
 void find_empty_place(int i,int j){
 
@@ -1478,8 +1504,19 @@ void find_empty_place(int i,int j){
 		}
 
 		sumBalls=0;
+
 		resetVisited();
+		// gera nova bola
+		countBalls();
+
+		ballselected=false;
+
+		while(!ballselected){
 		colorActive=rand()%3+1;
+		if ((colorActive ==1 && red) || (colorActive ==2 && green) || (colorActive ==3 && blue))
+			ballselected=true;
+		}  
+
 
 		for(int j=0;j<7;j++){
 			PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
