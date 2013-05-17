@@ -1527,16 +1527,8 @@ void find_empty_place(int i,int j){
 		sumBalls=0;
 
 		resetVisited();
-		// gera nova bola
-		countBalls();
 
-		ballselected=false;
 
-		while(!ballselected){
-		colorActive=rand()%3+1;
-		if ((colorActive ==1 && red) || (colorActive ==2 && green) || (colorActive ==3 && blue))
-			ballselected=true;
-		}  
 
 
 		for(int j=0;j<7;j++){
@@ -1572,7 +1564,18 @@ void find_empty_place(int i,int j){
 			}
 
 		}
+				// gera nova bola
+		countBalls();
 
+
+		ballselected=false;
+
+		while(!ballselected){
+		colorActive=rand()%3+1;
+		if ((colorActive ==1 && red) || (colorActive ==2 && green) || (colorActive ==3 && blue) || restart==1)
+			ballselected=true;
+		}  
+		//END nova bola
 
 		for(int j=0;j<column;j++){
 			if(GAMEPLAY[0][end_line][j][0] == 1){
