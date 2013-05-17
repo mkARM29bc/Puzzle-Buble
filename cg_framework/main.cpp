@@ -2051,7 +2051,7 @@ void reshape (int w, int h)
 	*/
 
 	float aspect = (float)w/(float)h; //aspect ratio.
-
+	
 	perspectiveMatrix = glm::perspective(45.0f, aspect, 0.001f, 1000.0f); //field of view; aspect ratio; z near; z far;
 
 	checkError ("reshape");
@@ -2071,16 +2071,7 @@ switch (key) {
 case 27:
 	exit(0);
 	break;
-case 'o':
-	if (particlesState==0)
-	{particlesState=1;}
-	else
-		particlesState=0;
-	printf("%d.",particlesState);
-	particleShift=true;
-	transitionTime=0;
-	//populateParticlesShiftDistance=true;
-	break;
+
 case 'c':
 
 	if (cameraMode == 0 ||cameraMode==4 ){
@@ -2229,7 +2220,16 @@ error2 = mciSendString(d, NULL, 0, 0);
 		}
 	}
 	break;
-
+	case 'o':
+	if (particlesState==0)
+	{particlesState=1;}
+	else
+		particlesState=0;
+	printf("%d.",particlesState);
+	particleShift=true;
+	transitionTime=0;
+	//populateParticlesShiftDistance=true;
+	break;
 	/*Rui test colors*/
 case '1':
 	color=1;
