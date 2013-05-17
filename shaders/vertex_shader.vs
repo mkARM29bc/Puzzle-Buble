@@ -37,4 +37,4 @@ void main()
 	//color_vf = diffuseColor * lightIntensity;
 	gl_Position = pMatrix * vMatrix * mMatrix * vertex;
 }
-
+// Updated EOF

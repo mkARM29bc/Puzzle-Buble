@@ -17,3 +17,4 @@ void main(void)
 	
 	fragColor = color_vf * texture(tex, texCoord_vf);
 }
+// Updated EOF
