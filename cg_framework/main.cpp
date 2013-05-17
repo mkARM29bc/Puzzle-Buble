@@ -13,7 +13,17 @@
 
 #define PI 3.14159265f
 
+struct FALL_BALL{
+	float x;
+	float y;
+	int color;
+	float rotation;
+	float increase;
+	float speed;
+};
 
+
+std::vector<FALL_BALL> fall_ball; 
 
 int cellshading=0;
 bool green,red,blue=true;
@@ -205,7 +215,7 @@ const GLfloat velocity = 0.25f;
 
 int cameraMode = 0;
 int move = 0;
-int frame=0,time,timebase=0;
+int frame=0,time,timebase=0,time2;
 int speed = 10;
 int restart = 1;
 int level = 0;
@@ -376,15 +386,6 @@ int end_line = 9;
 int end_game = 0;
 
 int NUMBER_OF_BALLS = 0;
-
-
-/*
-FALL_BALL fall_ball;
-
-fall_ball.x = 0.0f;
-fall_ball.y = 0.0f;
-fall_ball.speed = 0.0f;
-*/
 
 /* 
 Error checking function:
@@ -1306,14 +1307,34 @@ void find_empty_place(int i,int j){
 					}
 				}
 			}
-
+			float fall_speed = 0.0f;
 			for (int i=0;i<lines;i++){
 				for(int j=0;j<column;j++){
 					if(TEST_SPHERE[0][i][j][0] == 0 && GAMEPLAY[0][i][j][0] == 1){
-						GAMEPLAY[0][i][j][0] = 0;
-						GAMEPLAY[0][i][j][1] = 0; 
+								FALL_BALL fall;
 
-						NUMBER_OF_BALLS = NUMBER_OF_BALLS - 1;
+								if(i%2==0){
+									fall.x = -28.0f+j*8.0f;
+								}
+								else{
+									fall.x=-32.0f+j*8.0f;
+								}
+								fall.y = 70.0f-i*7.0f;
+								fall.rotation = 45.0f;
+								fall.color = GAMEPLAY[0][i][j][1];
+								fall.speed = fall_speed;
+								fall_speed +=0.01f;
+								fall.increase = 0.0f;
+
+								GAMEPLAY[0][i][j][0] = 0;
+								GAMEPLAY[0][i][j][1] = 0; 
+
+								NUMBER_OF_BALLS = NUMBER_OF_BALLS - 1;
+								
+								fall_ball.push_back(fall);
+								
+								//fall_ball.erase(fall_ball.begin()+i);
+								//for (int i=0;i<fall_ball.size();i++)
 
 					}
 				}
@@ -1723,7 +1744,7 @@ void display(void){
 				}
 
 				if(foundX==0 && i>=0){
-					if(PLAYER[0][1] <= (70.0-i*7.0)+5.25   && PLAYER[0][1] >= (70.0-i*7.0)-5.25){ //5.25
+					if(PLAYER[0][1] <= (70.0-i*7.0)+4.1   && PLAYER[0][1] >= (70.0-i*7.0)-4.1){ //5.25
 						foundX=1;
 					}
 					else{
@@ -1732,7 +1753,7 @@ void display(void){
 				}
 
 				if(foundY==0 && j>=0){
-					if(PLAYER[0][0] <= (-28.0+j*8.0)+6.0 && PLAYER[0][0] >= (-28.0+j*8.0)-6.0){ //6.0
+					if(PLAYER[0][0] <= (-28.0+j*8.0)+4.1 && PLAYER[0][0] >= (-28.0+j*8.0)-4.1){ //6.0
 
 						foundY=1;
 					}
@@ -2020,12 +2041,56 @@ void display(void){
 			}
 		}
 	}
+
 	actualfragment=1000;
 	exploding=false;
 	
 	proceedDestruction();
 	color = 0;
 	setBallColor();
+
+	time2=glutGet(GLUT_ELAPSED_TIME);
+
+	int max_fall_ball = fall_ball.size();
+
+	if(time2-timebase>100 && max_fall_ball > 0){
+		
+
+					printf(" max_fall_ball = %d\n", max_fall_ball);
+
+						//printf(" max_fall_ball = %d\n", max_fall_ball);
+						int i = 0;
+						while (true){
+
+							if(i==max_fall_ball)
+								break;
+
+							color = fall_ball[i].color;
+							setBallColor();
+
+							printf("%f %f %f\n",fall_ball[i].x,fall_ball[i].y,fall_ball[i].rotation);
+
+							display_at(0, fall_ball[i].x, fall_ball[i].y, 0.0f, 90.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
+						
+							fall_ball[i].speed = fall_ball[i].speed + 0.0001f;
+							fall_ball[i].y = fall_ball[i].y - fall_ball[i].speed;
+							fall_ball[i].increase = fall_ball[i].increase + 0.001f;
+							fall_ball[i].rotation = fall_ball[i].rotation + fall_ball[i].increase;
+
+							if(fall_ball[i].y <= -15.0f){
+								fall_ball.erase(fall_ball.begin()+i);
+								max_fall_ball = max_fall_ball - 1;
+							}
+
+							else{
+								i = i+1;
+							}
+						}
+					
+
+
+		time2 = timebase;
+	}
 
 	display_at(6, 0.0f,-10.0f, 0.0f,POINTER,0.0f, 0.0f, 1.0f,7.0f,7.0f,7.0f);
 
@@ -2252,9 +2317,11 @@ error2 = mciSendString(d, NULL, 0, 0);
 
 			timebase=glutGet(GLUT_ELAPSED_TIME);
 		}
+		/*
 		else{
 			move = 0;
 		}
+		*/
 	}
 	break;
 	case 'o':

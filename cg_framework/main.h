@@ -5,15 +5,6 @@
 
 const int objloader = 7;
 
-struct FALL_BALL{
-	GLfloat x;
-	GLfloat y;
-	int color;
-	GLfloat speed;
-};
-
-std::vector<FALL_BALL>; 
-
 extern GLuint vao[objloader];
 extern OBJLoader object[objloader];
 
