@@ -260,28 +260,6 @@ GLfloat MOVE_PLAYER[1][2] = {0.0f,1.0f};
 GLint LEVELS[max_levels][lines][column][2] = {
 	//LEVEL 0
 	{{
-		{0,0},{0,0},{0,0},{1,1},{1,1},{0,0},{0,0},{0,0}
-	},{
-		{-1,0},{0,0},{0,0},{0,0},{1,2},{0,0},{0,0},{0,0}
-	},{
-		{0,0},{0,0},{0,0},{1,3},{1,2},{0,0},{0,0},{0,0}
-	},{
-		{-1,0},{0,0},{0,0},{1,2},{0,0},{1,1},{0,0},{0,0}
-	},{
-		{0,0},{0,0},{0,0},{1,3},{0,0},{1,2},{0,0},{0,0}
-	},{
-		{-1,0},{0,0},{0,0},{1,1},{0,0},{1,3},{0,0},{0,0}
-	},{
-		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
-	},{
-		{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
-	},{
-		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
-	},{
-		{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
-	}},
-		//LEVEL 1
-	{{
 		{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1},{1,1} 
 	},{
 		{-1,0},{1,1},{1,1},{1,2},{1,2},{1,3},{1,3},{1,1}
@@ -293,6 +271,28 @@ GLint LEVELS[max_levels][lines][column][2] = {
 		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 	},{
 		{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	},{
+		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	},{
+		{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	},{
+		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	},{
+		{-1,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+	}},
+		//LEVEL 1
+	{{
+		{0,0},{0,0},{0,0},{1,1},{1,1},{0,0},{0,0},{0,0}
+	},{
+		{-1,0},{0,0},{0,0},{0,0},{1,2},{0,0},{0,0},{0,0}
+	},{
+		{0,0},{0,0},{0,0},{1,3},{1,2},{0,0},{0,0},{0,0}
+	},{
+		{-1,0},{0,0},{0,0},{1,2},{0,0},{1,1},{0,0},{0,0}
+	},{
+		{0,0},{0,0},{0,0},{1,3},{0,0},{1,2},{0,0},{0,0}
+	},{
+		{-1,0},{0,0},{0,0},{1,1},{0,0},{1,3},{0,0},{0,0}
 	},{
 		{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 	},{
@@ -1250,39 +1250,8 @@ void countBalls(){
 
 }
 
-
-void find_empty_place(int i,int j){
-
-	int foundX=1,foundY=1;
-
-
-
-	if (foundX == 1 && foundY == 1){
-
-		GAMEPLAY[0][i][j][0] = 1;
-		NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
-		printf("\n colisao2  i = %d and j = %d \n",i,j);
-
-
-
-		//colorBalls[i][j]=colorActive;
-		GAMEPLAY[0][i][j][1] = colorActive;
-
-
-		if (checkLine(i,j)){
-			if (lightIntensity[color]<10.0f)
-			{
-				lightIntensity[color]+=0.2f;
-
-			}
-			 soundballout();
-			destroy();
-
-			//teste123
-
-			for (int i=0;i<lines;i++){
-				for(int j=0;j<column;j++){
-					if(GAMEPLAY[0][i][j][0] == 1){
+void search_fall_ball_place(int i,int j){
+	if(GAMEPLAY[0][i][j][0] == 1){
 					if(i==0){
 						TEST_SPHERE[0][i][j][0] = 1;
 					}
@@ -1343,39 +1312,50 @@ void find_empty_place(int i,int j){
 
 						}
 					}
-					}
-					
+	}
+}
+
+
+void find_empty_place(int i,int j){
+
+	int foundX=1,foundY=1;
 
 
 
-					/*
-					if(GAMEPLAY[0][i][j][0] == 1){
-						if(i==0){
-							TEST_SPHERE[0][i][j][0] = 1;
-						}
-						else{
+	if (foundX == 1 && foundY == 1){
 
-							if(TEST_SPHERE[0][i-1][j][0] == 1)
-								TEST_SPHERE[0][i][j][0] = 1;
+		GAMEPLAY[0][i][j][0] = 1;
+		NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
+		printf("\n colisao2  i = %d and j = %d \n",i,j);
 
 
-							if(j-1>=0 && i%2==1)
-								if(TEST_SPHERE[0][i][j-1][0] == 1)
-									TEST_SPHERE[0][i][j][0] = 1;
 
-							if(j+1<column){
-								if(TEST_SPHERE[0][i-1][j+1][0] == 1)
-									TEST_SPHERE[0][i][j][0] = 1;
+		//colorBalls[i][j]=colorActive;
+		GAMEPLAY[0][i][j][1] = colorActive;
 
-								if(i%2 == 0 && TEST_SPHERE[0][i][j+1][0] == 1) 
-									TEST_SPHERE[0][i][j][0] = 1;
-							}									
-						}
-						
-					}
-					*/
-				}
+
+		if (checkLine(i,j)){
+			if (lightIntensity[color]<10.0f)
+			{
+				lightIntensity[color]+=0.2f;
+
 			}
+			 soundballout();
+			destroy();
+
+			//teste123
+
+			
+			for (int i=0;i<lines;i++){
+				for(int j=0;j<column;j++){
+					search_fall_ball_place(i,j);
+				}
+				for(int j=column-1;j>=0;j--){
+					search_fall_ball_place(i,j);
+				}
+				
+			}
+			
 			float fall_speed = 0.0f;
 			for (int i=0;i<lines;i++){
 				for(int j=0;j<column;j++){
@@ -2128,7 +2108,7 @@ void display(void){
 	if(time2-timebase>100 && max_fall_ball > 0){
 		
 
-					printf(" max_fall_ball = %d\n", max_fall_ball);
+					//printf(" max_fall_ball = %d\n", max_fall_ball);
 
 						//printf(" max_fall_ball = %d\n", max_fall_ball);
 						int i = 0;
@@ -2140,10 +2120,10 @@ void display(void){
 							color = fall_ball[i].color;
 							setBallColor();
 
-							printf("%f %f %f\n",fall_ball[i].x,fall_ball[i].y,fall_ball[i].rotation);
+							//printf("%f %f %f\n",fall_ball[i].x,fall_ball[i].y,fall_ball[i].rotation);
 
-							display_at(0, fall_ball[i].x, fall_ball[i].y, 0.0f, 90.0f,0.0f, 1.0f, 0.0f,1.0f,1.0f,1.0f);
-						
+							display_at(0, fall_ball[i].x, fall_ball[i].y, 0.0f, fall_ball[i].rotation,1.0f, 0.0f, 0.0f,1.0f,1.0f,1.0f);
+							
 							fall_ball[i].speed = fall_ball[i].speed + 0.0001f;
 							fall_ball[i].y = fall_ball[i].y - fall_ball[i].speed;
 							fall_ball[i].increase = fall_ball[i].increase + 0.001f;
