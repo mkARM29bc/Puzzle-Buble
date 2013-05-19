@@ -695,7 +695,7 @@ void changeParticles(){
 
 		else
 		{
-			printf("teste");
+			//printf("teste");
 			particleShift=false;
 
 		}
@@ -1105,19 +1105,19 @@ void checkSurroundingBalls(int l, int c){
 			linha=l+ltemp;
 			coluna=c+ctemp;
 
-			printf("Verificar bola linha %d e coluna %d\n",l+ltemp, c+ctemp);
+			//printf("Verificar bola linha %d e coluna %d\n",l+ltemp, c+ctemp);
 			if ((l+ltemp)>=0 && (l+ltemp)<=7 && (c+ctemp)>=0 && (c+ctemp)<=7){
-				printf("passou teste1");
+				//printf("passou teste1");
 				//printf(" teste linha:%d coluna:%d\n GAMEPLAY[0][linha][coluna][0] :%d\nGAMEPLAY[0][linha][coluna][1]:%d\ncolorActive%d\n",linha,coluna,GAMEPLAY[0][linha][coluna][0],GAMEPLAY[0][linha][coluna][1],colorActive);
 				if ((ltemp != ctemp || ((ltemp==ctemp) && ltemp!=0)) && (GAMEPLAY[0][linha][coluna][0]==1) && (GAMEPLAY[0][linha][coluna][1]==colorActive) && visitedBalls[linha][coluna]==0)
 				{
-					printf("passou teste2");
+					//printf("passou teste2");
 					checkSurroundingBalls(l+ltemp, c+ctemp);
 					
 				}
 
 				else
-					printf("Verificada bola linha %d e coluna %d e nada.\n",l+ltemp, c+ctemp);
+					//printf("Verificada bola linha %d e coluna %d e nada.\n",l+ltemp, c+ctemp);
 					if ((visitedBalls[l+ltemp][c+ctemp]==0) && GAMEPLAY[0][l+ltemp][c+ctemp][1]!=colorActive )
 					{
 						visitedBalls[l+ltemp][c+ctemp]=1;
@@ -1326,10 +1326,7 @@ void find_empty_place(int i,int j){
 
 		GAMEPLAY[0][i][j][0] = 1;
 		NUMBER_OF_BALLS = NUMBER_OF_BALLS + 1;
-		printf("\n colisao2  i = %d and j = %d \n",i,j);
-
-
-
+		
 		//colorBalls[i][j]=colorActive;
 		GAMEPLAY[0][i][j][1] = colorActive;
 
@@ -1389,6 +1386,7 @@ void find_empty_place(int i,int j){
 				}
 			}
 
+			/*
 			printf("TEST_SPHERE\n");
 			for (int j=0;j<lines;j++){
 				if(j%2==1){
@@ -1401,6 +1399,7 @@ void find_empty_place(int i,int j){
 				}
 				printf("\n");
 			}
+			*/
 			for (int i=0;i<lines;i++){
 				for(int j=0;j<column;j++){
 					TEST_SPHERE[0][i][j][0] = RESET_SPHERE[i][j][0];
@@ -1584,7 +1583,8 @@ void find_empty_place(int i,int j){
 			PLAYER[0][j] = PLAYER_ORIGINAL[0][j];
 		}
 		//ARMINDO
-		MOVE_PLAYER[0][1] = MOVE_PLAYER_ORIGINAL[0][1];
+		//MOVE_PLAYER[0][1] = MOVE_PLAYER_ORIGINAL[0][1];
+		
 		for(int j=0;j<2;j++){
 			MOVE_PLAYER_TRANSLATE[0][j] = MOVE_PLAYER_ORIGINAL[0][j];
 		}
@@ -1601,8 +1601,9 @@ void find_empty_place(int i,int j){
 			}
 			printf("\n");
 		}
-
+		printf("\n");
 		printf("NUMBER_OF_BALLS = %d\n",NUMBER_OF_BALLS);
+		
 
 		if(NUMBER_OF_BALLS == 0){
 			restart = 1;
@@ -1819,8 +1820,8 @@ void display(void){
 			if(found==1){
 				find_empty_place(i,j);
 				//move=0;
-				printf("\n colisao1  i = %d and j = %d \n",i,j);
-				printf("Encontrou colisao");
+				//printf("\n colisao1  i = %d and j = %d \n",i,j);
+				//printf("Encontrou colisao");
 			}
 
 
@@ -2056,6 +2057,9 @@ void display(void){
 			}
 			printf("\n");
 		}
+		printf("\n");
+		printf("NUMBER_OF_BALLS = %d\n",NUMBER_OF_BALLS);
+
 			scaled=false;
 	
 		for  (int i=0;i<lines;i++ )
@@ -2381,7 +2385,7 @@ error2 = mciSendString(d, NULL, 0, 0);
 	{particlesState=1;}
 	else
 		particlesState=0;
-	printf("%d.",particlesState);
+	//printf("%d.",particlesState);
 	particleShift=true;
 	transitionTime=0;
 	//populateParticlesShiftDistance=true;
