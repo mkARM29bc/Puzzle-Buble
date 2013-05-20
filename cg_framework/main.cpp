@@ -2445,16 +2445,9 @@ void keyboardSpecialKeys(int key, int x, int y)
 				}
 			}
 			break;
-		case GLUT_KEY_UP:
-			//cameraPos.x += cos(angle) * velocity;
-			//cameraPos.z += sin(angle) * velocity;
 			/*
-			PLAYER[0][3]-=10.0;
-			PLAYER[0][6] = 1.0f;
-			PLAYER[0][4] = 1.0f;
-			PLAYER[0][5] = 0.0f;
-			PLAYER[0][1]+=1;
-			*/
+		case GLUT_KEY_UP:
+			
 
 			if (MOVE_PLAYER_TRANSLATE[0][0] >= -0.9f){
 				MOVE_PLAYER_TRANSLATE[0][0] -= 0.1f;
@@ -2462,20 +2455,13 @@ void keyboardSpecialKeys(int key, int x, int y)
 			}
 			break;
 		case GLUT_KEY_DOWN:
-			//cameraPos.x -= cos(angle) * velocity;
-			//cameraPos.z -= sin(angle) * velocity;
-			/*
-			PLAYER[0][3]+=10.0;
-			PLAYER[0][6] = 1.0f;
-			PLAYER[0][4] = 1.0f;
-			PLAYER[0][5] = 0.0f;
-			PLAYER[0][1]-=1;
-			*/
+			
 			if (MOVE_PLAYER_TRANSLATE[0][0] <= 0.9f){
 				MOVE_PLAYER_TRANSLATE[0][0] += 0.1f;
 				MOVE_PLAYER_TRANSLATE[0][1] = 1 - abs(MOVE_PLAYER_TRANSLATE[0][0]);
 			}
 			break;
+			*/
 	}
 }
 
